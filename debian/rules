@@ -1,0 +1,6 @@
+#!/usr/bin/make -f
+
+export DESTDIR=`pwd`/debian/tmp
+
+%: 
+	dh $@ 

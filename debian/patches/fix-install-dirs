@@ -1,0 +1,43 @@
+--- a/pam-password-token/Makefile
++++ b/pam-password-token/Makefile
+@@ -3,9 +3,10 @@ CFLAGS  = -DVERSION=$(VERSION) -I../jsmn
+ LDFLAGS = -lcurl -lc -x --shared -lpam -laudit
+ LDFLAGS_EXTRA = -lrhonabwy
+ LIBNAME = pam_oidc
+-CONFIG_DIR = /etc/pam.d
++CONFIG_DIR = $(DESTDIR)/etc/pam.d
+ CONFIG_FILE = config.ini
+-TARGET_DIR = /lib64/security
++DEB_TRIPLET := $(shell dpkg-architecture -qDEB_TARGET_MULTIARCH)
++TARGET_DIR = $(DESTDIR)/lib/$(DEB_TRIPLET)
+ TARGET_PASSWORD  = $(TARGET_DIR)/$(LIBNAME)_password.so
+ TARGET_TOKEN  = $(TARGET_DIR)/$(LIBNAME)_token.so
+ JSMN    = ../jsmn-web-tokens
+@@ -14,7 +15,7 @@ VPATH = $(COMMON)
+ SOURCES = pam.c common.c base64.c token.c connect.c strrep.c file_io.c ini.c
+ OBJECTS = $(patsubst %.c,obj$(VERSION)/%.o,$(SOURCES))
+ 
+-all: compile_password compile_token
++all: compile_token
+ 
+ compile_password:
+ 	@- if ! test -e objpassword; then mkdir objpassword; fi	
+@@ -44,13 +45,17 @@ clean_token:
+ clean: clean_password clean_token
+ 	@echo "Cleaning objects"
+ 
++install_dirs:
++	mkdir -p $(TARGET_DIR)
++	mkdir -p $(CONFIG_DIR)
++
+ install_password:
+ 	ld $(LDFLAGS) $(LDFLAGS_EXTRA) -o $(TARGET_PASSWORD) objpassword/*.o
+ 
+ install_token:
+ 	ld $(LDFLAGS) -o $(TARGET_TOKEN) objtoken/*.o
+ 
+-install: install_password install_token
++install: install_dirs install_token
+ 	@echo "Copying config file"
+ 	cp $(CONFIG_FILE) $(CONFIG_DIR)
+ 	@echo "Please update /etc/pam.d/config.ini file accordingly"

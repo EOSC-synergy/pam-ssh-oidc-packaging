@@ -1,0 +1,22 @@
+Source: pam-ssh-oidc
+Section: admin
+Priority: extra
+Maintainer: Marcus Hardt <marcus@hardt-it.de>
+Homepage: n/a
+Standards-Version: 4.5.0
+Vcs-Git: 
+Vcs-Browser: n/a
+Rules-Requires-Root: no
+Build-Depends: debhelper-compat (= 11),
+               fakeroot,
+               devscripts
+
+Package: pam-ssh-oidc
+Architecture: any
+Pre-Depends: dpkg (>= 1.16.1), ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends},
+Recommends: motley-cue
+Description: Enable ssh to use OIDC AccessTokens via pam module
+ This tool a pam module that allows the use of AccessTokens for
+ authentication.
+
