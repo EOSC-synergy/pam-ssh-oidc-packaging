@@ -34,7 +34,7 @@ make install DESTDIR=${RPM_BUILD_ROOT}
 %files
 %defattr(-,root,root,-)
 /etc/pam.d/config.ini
-/lib64/security/pam_oidc_token.so
+/lib/x86_64-linux-gnu/security/pam_oidc_token.so
 
 %changelog
 
