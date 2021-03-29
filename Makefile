@@ -76,30 +76,6 @@ deb: cleanapi create_obj_dir_structure preparedeb
 
 ############ RPM Targets
 
-.PHONY: patch-for-debian
-patch-for-debian:
-	@if [ -e ".patched" ]; then \
-		echo "Patches already applied"; \
-	else \
-		echo "Applying patches"; \
-		for i in `cat debian/patches/series | grep -v "^#"`; do \
-			echo Applying patch: $$i; \
-			cat debian/patches/$$i | patch -p1; \
-		done; \
-    fi
-	@touch .patched
-.PHONY: unpatch-for-debian
-unpatch-for-debian:
-	@if [ -e ".patched" ]; then \
-		echo "Removing patches"; \
-		for i in `cat debian/patches/series | grep -v "^#"`; do \
-			echo Reverting patch: $$i; \
-			cat debian/patches/$$i | patch -p1 -R; \
-		done; \
-		rm .patched; \
-	else \
-		echo "Patches already removed"; \
-	fi
 .PHONY: patch-for-rpm
 patch-for-rpm:
 	@if [ -e ".patched" ]; then \
