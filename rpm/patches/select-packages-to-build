@@ -1,0 +1,11 @@
+--- a/pam-password-token/Makefile
++++ b/pam-password-token/Makefile
+@@ -14,7 +14,7 @@
+ SOURCES = pam.c common.c base64.c token.c connect.c strrep.c file_io.c ini.c
+ OBJECTS = $(patsubst %.c,obj$(VERSION)/%.o,$(SOURCES))
+ 
+-all: compile_password compile_token
++all: compile_token
+ 
+ compile_password:
+ 	@- if ! test -e objpassword; then mkdir objpassword; fi	

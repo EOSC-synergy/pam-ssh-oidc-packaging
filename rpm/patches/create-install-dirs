@@ -1,0 +1,21 @@
+--- a/pam-password-token/Makefile
++++ b/pam-password-token/Makefile
+@@ -47,13 +47,17 @@
+ clean: clean_password clean_token
+ 	@echo "Cleaning objects"
+ 
++install_dirs:
++	mkdir -p $(TARGET_DIR)
++	mkdir -p $(CONFIG_DIR)
++
+ install_password:
+ 	ld $(LDFLAGS) $(LDFLAGS_EXTRA) -o $(TARGET_PASSWORD) objpassword/*.o
+ 
+ install_token:
+ 	ld $(LDFLAGS) -o $(TARGET_TOKEN) objtoken/*.o
+ 
+-install: install_password install_token
++install: install_dirs install_token
+ 	@echo "Copying config file"
+ 	cp $(CONFIG_FILE) $(CONFIG_DIR)
+ 	@echo "Please update /etc/pam.d/config.ini file accordingly"

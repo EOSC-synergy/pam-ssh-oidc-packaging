@@ -1,15 +1,13 @@
 --- a/pam-password-token/Makefile
 +++ b/pam-password-token/Makefile
-@@ -3,9 +3,11 @@ CFLAGS  = -DVERSION=$(VERSION) -I../jsmn
+@@ -3,9 +3,9 @@ CFLAGS  = -DVERSION=$(VERSION) -I../jsmn
  LDFLAGS = -lcurl -lc -x --shared -lpam -laudit
  LDFLAGS_EXTRA = -lrhonabwy
  LIBNAME = pam_oidc
 -CONFIG_DIR = /etc/pam.d
 +CONFIG_DIR = $(DESTDIR)/etc/pam.d
  CONFIG_FILE = config.ini
- TARGET_DIR = /lib/x86_64-linux-gnu/security
-+DEB_TRIPLET := $(shell dpkg-architecture -qDEB_TARGET_MULTIARCH)
-+TARGET_DIR = $(DESTDIR)/lib/$(DEB_TRIPLET)
+-TARGET_DIR = /lib/x86_64-linux-gnu/security
++TARGET_DIR = $(DESTDIR)/lib/x86_64-linux-gnu/security
  TARGET_PASSWORD  = $(TARGET_DIR)/$(LIBNAME)_password.so
  TARGET_TOKEN  = $(TARGET_DIR)/$(LIBNAME)_token.so
- JSMN    = ../jsmn-web-tokens
