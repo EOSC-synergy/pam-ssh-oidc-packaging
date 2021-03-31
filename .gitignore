@@ -1,0 +1,5 @@
+.patched
+.pc/
+common/
+jsmn-web-tokens/
+pam-password-token/
