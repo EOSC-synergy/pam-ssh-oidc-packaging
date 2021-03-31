@@ -40,7 +40,7 @@ package-clean:
 	@echo PACKAGE_CLEAN
 	quilt pop -a -f || true
 	./debian/rules clean
-	rm -rf common pam-password-token jsmn-web-tokens
+	rm -rf common pam-password-token jsmn-web-tokens .patched
 
 .PHONY: subdirs $(INSTALLDIRS)
 .PHONY: subdirs $(SUBDIRS)
@@ -53,6 +53,7 @@ get-sources:
 	git clone https://git.man.poznan.pl/stash/scm/pracelab/pam.git upstream -b develop
 	mv upstream/common upstream/pam-password-token upstream/jsmn-web-tokens .
 	rm -rf upstream
+	rm -f .patched
 	#quilt push -a
 
 info:
