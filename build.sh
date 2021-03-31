@@ -14,10 +14,24 @@ OUTPUT="$BASE/results"
 
 echo "PACKAGE: $PACKAGE"
 echo "DIST: $DIST"
+echo "OUTPUT: $OUTPUT"
 
 test -z $DIST && {
     echo "Must specify DIST as 2nd parameter"
     exit
+}
+
+common_prepare_dirs() {
+    mkdir -p /tmp/build
+    mkdir -p $OUTPUT/$DIST
+    cp -af $BASE/$PACKAGE /tmp/build
+    cd /tmp/build/$PACKAGE 
+}
+common_fix_output_permissions() {
+    UP_UID=`stat -c '%u' $BASE`
+    UP_GID=`stat -c '%g' $BASE`
+    chown $UP_UID:$UP_GID $OUTPUT
+    chown -R $UP_UID:$UP_GID $OUTPUT/$DIST
 }
 
 debian_install_dependencies() {
@@ -37,50 +51,42 @@ debian_build_package() {
 debian_copy_output() {
     echo "Moving output:"
     ls -l ..
-    mv ../${PACKAGE}_* $OUTPUT/$DIST
-    mv ../${PACKAGE}-dbgsym_* $OUTPUT/$DIST 2>/dev/null
+    mv ../${PACKAGE}[_-]* $OUTPUT/$DIST
+    #mv ../${PACKAGE}-dbgsym_* $OUTPUT/$DIST 2>/dev/null
 }
 
-common_prepare_dirs() {
-    mkdir -p /tmp/build
-    mkdir -p $OUTPUT/$DIST
-    cp -af $BASE/$PACKAGE /tmp/build
-    cd /tmp/build/$PACKAGE 
+centos7_install_dependencies () {
+    yum -y install centos-release-scl
+    yum -y install devtoolset-7-gcc*
+    yum -y install libcurl-devel pam-devel audit-libs-devel
 }
-
-#centos8_install_libcurl-devel() {
-#    yum -y install git openssl-devel
-#    mkdir -p /tmp/curl
-#    cd /tmp/curl
-#    git clone https://github.com/curl/curl.git
-#    cd curl
-#    git checkout curl-7_75_0
-#    autoreconf -fi
-#    #./configure --with-openssl
-#    ./configure --with-openssl --with-ssl --with-zlib --with-gssapi --with-nghttp2 --with-ngtcp2 --with-quiche
-#    make
-#    make install
-#}
+centos7_patch_gcc_requirement () {
+    # This is a workaround for rpmbuild vs devtoolset:
+    # rpmbuild will not notice the actual version used by the system,
+    # hence we reduce the required version of gcc, and rely on the newer
+    # one actually being used.
+    sed s/"BuildRequires: cpp >= 6"/"BuildRequires: cpp >= 4"/ -i rpm/pam-ssh-oidc.spec
+    # Be futre proof :)
+    sed s/"BuildRequires: cpp >= 7"/"BuildRequires: cpp >= 4"/ -i rpm/pam-ssh-oidc.spec
+}
 centos8_install_dependencies () {
     dnf -y group install "Development Tools"
-    yum install -y gcc gcc-c++ libcurl-devel pam-devel audit-libs-devel
-    #centos8_install_libcurl-devel
-    #libpam0g-dev libcurl4-openssl-dev libaudit-dev
+    yum -y install libcurl-devel pam-devel audit-libs-devel
 }
-#rpm_prepare_dirs() {
-#    mkdir -p rpm/rpmbuild/SOURCES
-#    # FIXME: location and name of tarball is only known in Makefile
-#    cp -afxx v$(SRC_TAR) rpm/rpmbuild/SOURCES/
-#}
+centos7_build_package() {
+    cd /tmp/build/$PACKAGE 
+    make srctar
+    echo make rpm | scl enable devtoolset-7 - 
+}
 rpm_build_package() {
     cd /tmp/build/$PACKAGE 
     make srctar
     make rpm
 }
 rpm_copy_output() {
-    ls -lrpm/rpmbuild/RPMS/*/*
+    ls -l rpm/rpmbuild/RPMS/*/*
     echo "-----"
-    mv rpm/rpmbuild/RPMS/x86_64/${PACKAGE}*rpm $OUTPUT/$DIST .
+    mv rpm/rpmbuild/RPMS/x86_64/${PACKAGE}*rpm $OUTPUT/$DIST
 }
     
 ###########################################################################
@@ -98,11 +104,17 @@ case "$DIST" in
         debian_build_package
         debian_copy_output
     ;;
-centos8)
-        #rpm_prepare_dirs
+    centos7)
+        centos7_install_dependencies
+        centos7_patch_gcc_requirement
+        centos7_build_package
+        rpm_copy_output
+    ;;
+    centos8)
         centos8_install_dependencies
         rpm_build_package
         rpm_copy_output
+    ;;
 esac
 
-
+common_fix_output_permissions
