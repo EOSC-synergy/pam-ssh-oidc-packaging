@@ -79,7 +79,6 @@ centos7_build_package() {
     echo make rpm | scl enable devtoolset-7 - 
 }
 rpm_build_package() {
-    cd /tmp/build/$PACKAGE 
     make srctar
     make rpm
 }
