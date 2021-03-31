@@ -1,18 +1,17 @@
 PKG_NAME  = pam-ssh-oidc
 PKG_NAME_UPSTREAM = pam-ssh-oidc
-VERSION := 0.1.1
+VERSION := $(shell git tag -l  | tail -n 1 | sed s/v//)
 
 BASEDIR = $(PWD)
 BASENAME := $(notdir $(PWD))
 DOCKER_BASE=`dirname ${PWD}`
 PACKAGE=`basename ${PWD}`
-#SRC_TAR:=$(PKG_NAME)-$(VERSION).tar
 SRC_TAR:=$(PKG_NAME).tar
-#VERSION := $(shell git tag -l  | tail -n 1 | sed s/v//)
 
+
+### Actual targets
 SUBDIRS = pam-password-token
 CLEANDIRS = $(SUBDIRS)
-
 
 
 all: info $(SUBDIRS)
@@ -48,9 +47,7 @@ package-clean:
 .PHONY: subdirs $(CLEANDIRS)
 .PHONY: all install clean
 
-##########################################
-# Marcus Editing
-
+### pam-oidc source code handling targets
 get-sources:
 	@echo GET-SOURCES
 	git clone https://git.man.poznan.pl/stash/scm/pracelab/pam.git upstream -b develop
@@ -62,7 +59,7 @@ info:
 	@echo "DESTDIR:         $(DESTDIR)"
 	@echo "INSTALLDIRS:     $(INSTALLDIRS)"
 
-# Dockers
+### Dockers
 dockerised_all_packages: dockerised_deb_debian_buster dockerised_deb_debian_bullseye dockerised_deb_ubuntu_bionic dockerised_deb_ubuntu_focal dockerised_rpm_centos7 dockerised_rpm_centos8
 
 docker_images: docker_centos8 docker_centos7 docker_debian_bullseye docker_debian_buster docker_ubuntu_bionic docker_ubuntu_focal
@@ -195,13 +192,10 @@ unpatch-for-rpm:
 .PHONY: srctar
 srctar: patch-for-rpm
 	@(cd ..; tar cf $(BASENAME)/$(SRC_TAR) $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
-	#@tar cf $(SRC_TAR) Makefile README.md Changelog $(SSH_KEY_RETRIEVER) $(CONFIG).example $(PKG_NAME).go   --transform='s_^_$(PKG_NAME)-$(VERSION)/_'
-
 	mkdir -p rpm/rpmbuild/SOURCES
 	mv $(SRC_TAR) rpm/rpmbuild/SOURCES/${PKG_NAME}.tar
 
 .PHONY: rpm
 rpm: srctar
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}.spec
-	#rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/pam-ssh-oidc.spec
 
