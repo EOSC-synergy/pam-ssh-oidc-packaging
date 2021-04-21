@@ -8,6 +8,7 @@ DOCKER_BASE=`dirname ${PWD}`
 PACKAGE=`basename ${PWD}`
 SRC_TAR:=$(PKG_NAME).tar
 
+SHELL=bash
 
 ### Actual targets
 SUBDIRS = pam-password-token
@@ -65,8 +66,8 @@ dockerised_all_packages: dockerised_deb_debian_buster dockerised_deb_debian_bull
 
 docker_images: docker_centos8 docker_centos7 docker_debian_bullseye docker_debian_buster docker_ubuntu_bionic docker_ubuntu_focal
 docker_debian_buster:
-	echo "\ndebian_buster"
-	@echo "FROM debian:buster\n"\
+	echo -e "\ndebian_buster"
+	@echo -e "FROM debian:buster\n"\
 	"RUN apt-get update && "\
 		"apt-get -y upgrade && "\
 		"apt-get -y install build-essential dh-make quilt "\
@@ -74,8 +75,8 @@ docker_debian_buster:
     	"python3 python3-dev python3-pip python3-setuptools "| \
 	docker build --tag debian_buster -f - .
 docker_debian_bullseye:
-	echo "\ndebian_bullseye"
-	@echo "FROM debian:bullseye\n"\
+	echo -e "\ndebian_bullseye"
+	@echo -e "FROM debian:bullseye\n"\
 	"RUN apt-get update && "\
 		"apt-get -y upgrade && "\
 		"apt-get -y install build-essential dh-make quilt "\
@@ -83,8 +84,8 @@ docker_debian_bullseye:
 		"python3 python3-dev python3-pip python3-setuptools "| \
 	docker build --tag debian_bullseye -f - .
 docker_ubuntu_bionic:
-	echo "\nubuntu_bionic"
-	@echo "FROM ubuntu:bionic\n"\
+	echo -e "\nubuntu_bionic"
+	@echo -e "FROM ubuntu:bionic\n"\
 	"RUN apt-get update && "\
 		"apt-get -y upgrade && "\
 		"apt-get -y install build-essential dh-make quilt "\
@@ -92,8 +93,8 @@ docker_ubuntu_bionic:
 		"python3 python3-dev python3-pip python3-setuptools "| \
 	docker build --tag ubuntu_bionic -f - .
 docker_ubuntu_focal:
-	echo "\nubuntu_focal"
-	@echo "FROM ubuntu:focal\n"\
+	echo -e "\nubuntu_focal"
+	@echo -e "FROM ubuntu:focal\n"\
 	"ENV DEBIAN_FRONTEND=noninteractive\n"\
 	"ENV  TZ=Europe/Berlin\n"\
 	"RUN apt-get update && "\
@@ -103,15 +104,15 @@ docker_ubuntu_focal:
 		"python3 python3-dev python3-pip python3-setuptools "| \
 	docker build --tag ubuntu_focal -f - .
 docker_centos7:
-	echo "\ncentos7"
-	@echo "FROM centos:7\n"\
+	echo -e "\ncentos7"
+	@echo -e "FROM centos:7\n"\
 	"RUN yum -y install make rpm-build\n"\
 	"RUN yum -y groups mark convert\n"\
 	"RUN yum -y groupinstall \"Development tools\"\n" | \
 	docker build --tag centos7 -f - .
 docker_centos8:
-	echo "\ncentos8"
-	@echo "FROM centos:8\n"\
+	echo -e "\ncentos8"
+	@echo -e "FROM centos:8\n"\
 	"RUN yum install -y make rpm-build\n" \
 	"RUN dnf -y group install \"Development Tools\"\n" | \
 	docker build --tag centos8 -f -  .
@@ -190,7 +191,7 @@ patch-for-rpm:
 unpatch-for-rpm:
 	@if [ -e ".patched" ]; then \
 		echo "Removing patches"; \
-		for i in `cat rpm/patches/series | grep -v "^#"`; do \
+		for i in `cat rpm/patches/series | grep -v "^#" | tac`; do \
 			echo Reverting patch: $$i; \
 			cat rpm/patches/$$i | patch -p1 -R; \
 		done; \
