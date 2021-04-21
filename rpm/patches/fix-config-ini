@@ -1,0 +1,19 @@
+--- /dev/null
++++ b/pam-password-token/pam-ssh-oidc-config.ini
+@@ -0,0 +1,5 @@
++[user_verification]
++; if local is set to false then user verification is based upon verify_endpoint,
++; otherwise userinfo_endpoint is used
++local = false
++verify_endpoint = http://localhost:8080/verify_user
+--- a/pam-password-token/Makefile
++++ b/pam-password-token/Makefile
+@@ -4,7 +4,7 @@ LDFLAGS = -lcurl -lc -x --shared -lpam -
+ LDFLAGS_EXTRA = -lrhonabwy
+ LIBNAME = pam_oidc
+ CONFIG_DIR = $(DESTDIR)/etc/pam.d
+-CONFIG_FILE = config.ini
++CONFIG_FILE = pam-ssh-oidc-config.ini
+ TARGET_DIR = $(DESTDIR)/lib/x86_64-linux-gnu/security
+ TARGET_PASSWORD  = $(TARGET_DIR)/$(LIBNAME)_password.so
+ TARGET_TOKEN  = $(TARGET_DIR)/$(LIBNAME)_token.so
