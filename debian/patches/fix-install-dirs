@@ -9,7 +9,7 @@
  CONFIG_FILE = config.ini
  TARGET_DIR = /lib/x86_64-linux-gnu/security
 +DEB_TRIPLET := $(shell dpkg-architecture -qDEB_TARGET_MULTIARCH)
-+TARGET_DIR = $(DESTDIR)/lib/$(DEB_TRIPLET)
++TARGET_DIR = $(DESTDIR)/lib/$(DEB_TRIPLET)/security
  TARGET_PASSWORD  = $(TARGET_DIR)/$(LIBNAME)_password.so
  TARGET_TOKEN  = $(TARGET_DIR)/$(LIBNAME)_token.so
  JSMN    = ../jsmn-web-tokens
