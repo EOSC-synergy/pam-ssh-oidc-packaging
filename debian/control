@@ -15,7 +15,7 @@ Package: pam-ssh-oidc
 Architecture: any
 Pre-Depends: dpkg (>= 1.16.1), ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends},
-Recommends: motley-cue
+Suggests: motley-cue
 Description: Enable ssh to use OIDC AccessTokens via pam module
  This tool a pam module that allows the use of AccessTokens for
  authentication.
