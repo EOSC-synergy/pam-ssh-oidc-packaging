@@ -1,5 +1,5 @@
 Name: pam-ssh-oidc
-Version: 0.1.1
+Version: 0.1.2
 Release: 1
 Summary: PAM Plugin allowing consumption of OIDC AccessTokens
 Group: Misc
@@ -33,8 +33,37 @@ make install DESTDIR=${RPM_BUILD_ROOT}
 
 %files
 %defattr(-,root,root,-)
-/etc/pam.d/config.ini
-/lib/x86_64-linux-gnu/security/pam_oidc_token.so
+/etc/pam.d/pam-ssh-oidc-config.ini
+/usr/lib64/security/pam_oidc_token.so
 
 %changelog
 
+%post
+# Test /etc/pam.d/sshd for adequate config:
+PAM_SSHD="/etc/pam.d/sshd"
+cat ${PAM_SSHD} | grep -v ^# | grep -q  "pam_oidc_token.so" || {
+    echo "######################################################################"
+    echo "#  Enabling configuration for pam_oidc_token.so in ${PAM_SSHD}"
+    echo "#  A backup is in ${PAM_SSHD}.dist"
+    echo "######################################################################"
+    test -e ${PAM_SSHD}.dist && mv ${PAM_SSHD}.dist /tmp
+    HEADLINE=`head -n 1 ${PAM_SSHD}`
+    mv ${PAM_SSHD} ${PAM_SSHD}.dist
+    echo ${HEADLINE} > ${PAM_SSHD}
+    echo "" >> ${PAM_SSHD}
+    echo "# use pam-ssh-oidc" >> ${PAM_SSHD}
+    echo "auth   sufficient pam_oidc_token.so config=/etc/pam.d/pam-ssh-oidc-config.ini" >> ${PAM_SSHD}
+    cat ${PAM_SSHD}.dist | grep -v "${HEADLINE}" >> ${PAM_SSHD}
+}
+# Test /etc/ssh/sshd for adequate config
+SSHD=/etc/ssh/sshd_config
+# Check if ChalleneResponseAuthentication is already enabled:
+grep -q "^ChallengeResponseAuthentication yes" ${SSHD} || {
+    echo "######################################################################"
+    echo "#  pam-ssh-oidc detected that your /etc/ssh/sshd_config              #"
+    echo "#  does not contain 'ChallengeResponseAuthentication yes'            #"
+    echo "#  Consider setting this to yes, if login via pam-ssh does           #"
+    echo "#  not show the 'AccessToken: ' prompt. Note that this will          #"
+    echo "#  enable password login, even if 'Passwordauthentication no' is set #"
+    echo "######################################################################"
+}
