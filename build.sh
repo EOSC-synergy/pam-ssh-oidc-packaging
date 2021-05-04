@@ -73,6 +73,9 @@ centos8_install_dependencies () {
     dnf -y group install "Development Tools"
     yum -y install libcurl-devel pam-devel audit-libs-devel
 }
+opensuse15_install_dependencies() {
+    zypper -n install libcurl-devel pam-devel zypper audit-devel git
+}
 centos7_build_package() {
     cd /tmp/build/$PACKAGE 
     make srctar
@@ -111,6 +114,11 @@ case "$DIST" in
     ;;
     centos8)
         centos8_install_dependencies
+        rpm_build_package
+        rpm_copy_output
+    ;;
+    opensuse15|opensuse_tumbleweed)
+        opensuse15_install_dependencies
         rpm_build_package
         rpm_copy_output
     ;;
