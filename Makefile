@@ -83,7 +83,7 @@ docker_images: docker_centos8\
 	docker_opensuse15.3\
 	docker_opensuse_tumbleweed
 
-	docker_ubuntu_focal
+.PHONY: docker_debian_buster
 docker_debian_buster:
 	@echo -e "\ndebian_buster"
 	@echo -e "FROM debian:buster\n"\
@@ -184,49 +184,58 @@ docker_clean:
 
 .PHONY: dockerised_deb_debian_buster
 dockerised_deb_debian_buster: docker_debian_buster
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build debian_buster /home/build/${PACKAGE}/build.sh ${PACKAGE} debian_buster
+	@echo "Writing build log to $@.log"
+	@docker run -it --rm -v ${DOCKER_BASE}:/home/build debian_buster /home/build/${PACKAGE}/build.sh ${PACKAGE} debian_buster ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_deb_debian_bullseye
 dockerised_deb_debian_bullseye: docker_debian_bullseye
+	@echo "Writing build log to $@.log"
 	@docker run -it --rm -v ${DOCKER_BASE}:/home/build debian_bullseye \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} debian_bullseye
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} debian_bullseye ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_deb_ubuntu_bionic
 dockerised_deb_ubuntu_bionic: docker_ubuntu_bionic
+	@echo "Writing build log to $@.log"
 	@docker run -it --rm -v ${DOCKER_BASE}:/home/build ubuntu_bionic \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} ubuntu_bionic
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} ubuntu_bionic ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_deb_ubuntu_focal
 dockerised_deb_ubuntu_focal: docker_ubuntu_focal
+	@echo "Writing build log to $@.log"
 	@docker run -it --rm -v ${DOCKER_BASE}:/home/build ubuntu_focal \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} ubuntu_focal
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} ubuntu_focal ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_centos7
 dockerised_rpm_centos7: docker_centos7
+	@echo "Writing build log to $@.log"
 	@docker run -it --rm -v ${DOCKER_BASE}:/home/build centos7 \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} centos7
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} centos7 ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_centos8
 dockerised_rpm_centos8: docker_centos8
+	@echo "Writing build log to $@.log"
 	@docker run -it --rm -v ${DOCKER_BASE}:/home/build centos8 \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} centos8
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} centos8 ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_opensuse15.2
 dockerised_rpm_opensuse15.2: docker_opensuse15.2
+	@echo "Writing build log to $@.log"
 	@docker run -it --rm -v ${DOCKER_BASE}:/home/build opensuse15.2 \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse15.2 
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse15.2 ${PKG_NAME}
 
 .PHONY: dockerised_rpm_opensuse15.3
 dockerised_rpm_opensuse15.3: docker_opensuse15.3
+	@echo "Writing build log to $@.log"
 	@docker run -it --rm -v ${DOCKER_BASE}:/home/build opensuse15.3 \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse15.3 
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse15.3 ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_opensuse_tumbleweed
 dockerised_rpm_opensuse_tumbleweed: docker_opensuse_tumbleweed
+	@echo "Writing build log to $@.log"
 	@docker run -it --rm -v ${DOCKER_BASE}:/home/build opensuse_tumbleweed \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse_tumbleweed
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse_tumbleweed ${PKG_NAME} > $@.log
 
-.PHONE: publish-to-repo
+.PHONY: publish-to-repo
 publish-to-repo:
 	@rpmsign --addsign \
 		../results/*/*rpm\
@@ -262,7 +271,6 @@ debsource: clean preparedeb
 deb: cleanapi create_obj_dir_structure preparedeb
 	dpkg-buildpackage -i -b -uc -us
 	@echo "Success: DEBs are in parent directory"
-
 
 # RPM Packaging
 
