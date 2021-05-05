@@ -33,7 +33,6 @@ common_fix_output_permissions() {
     chown $UP_UID:$UP_GID $OUTPUT
     chown -R $UP_UID:$UP_GID $OUTPUT/$DIST
 }
-
 debian_install_dependencies() {
     apt-get update
     apt-get -y install libpam0g-dev libcurl4-openssl-dev libaudit-dev
@@ -83,12 +82,14 @@ centos7_build_package() {
 }
 rpm_build_package() {
     make srctar
-    make rpm
+    make rpms
 }
 rpm_copy_output() {
     ls -l rpm/rpmbuild/RPMS/*/*
+    ls -l rpm/rpmbuild/SRPMS/
     echo "-----"
     mv rpm/rpmbuild/RPMS/x86_64/${PACKAGE}*rpm $OUTPUT/$DIST
+    mv rpm/rpmbuild/SRPMS/*rpm $OUTPUT/$DIST
 }
     
 ###########################################################################
@@ -117,7 +118,7 @@ case "$DIST" in
         rpm_build_package
         rpm_copy_output
     ;;
-    opensuse15|opensuse_tumbleweed)
+    opensuse15*|opensuse_tumbleweed|sle*)
         opensuse15_install_dependencies
         rpm_build_package
         rpm_copy_output
