@@ -78,7 +78,7 @@ opensuse15_install_dependencies() {
 centos7_build_package() {
     cd /tmp/build/$PACKAGE 
     make srctar
-    echo make rpm | scl enable devtoolset-7 - 
+    echo make rpms | scl enable devtoolset-7 - 
 }
 rpm_build_package() {
     make srctar
@@ -111,6 +111,7 @@ case "$DIST" in
         centos7_install_dependencies
         centos7_patch_gcc_requirement
         centos7_build_package
+        centos7_build_srpm
         rpm_copy_output
     ;;
     centos8)
