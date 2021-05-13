@@ -1,0 +1,113 @@
+--- a/common/token.c
++++ b/common/token.c
+@@ -4,8 +4,6 @@
+ #include <errno.h>
+ #include <syslog.h>
+ #include <string.h>
+-#include "jsmn/jsmn.h"
+-#include "token.h"
+ 
+ /** @fn int fileDoesExist(const char* path)
+  * @brief checks if a file exists
+--- a/pam-password-token/pam.c
++++ b/pam-password-token/pam.c
+@@ -20,7 +20,9 @@
+ #include "../common/connect.h"
+ #include "../common/settings.h"
+ #include "../common/strrep.h"
++#ifdef USE_TOKEN_AND_JSMN
+ #include "../common/token.h"
++#endif // USE_TOKEN_AND_JSMN
+ #include "../common/file_io.h"
+ #include "../common/ini.h"
+ 
+@@ -122,9 +124,11 @@ PAM_EXTERN int pam_sm_authenticate( pam_
+     size_t auth_len;
+     bool is_password = true;
+     json_answer ans;
++#ifdef USE_TOKEN_AND_JSMN
+     keycloak_access_token header_payload;
+     keycloak_userinfo userinfo;
+     verification_answer ver_answer;
++#endif // USE_TOKEN_AND_JSMN
+     char s[2] = "\n";
+     configuration config = {
+ #if defined(VERSION) && VERSION == password
+@@ -228,6 +232,9 @@ PAM_EXTERN int pam_sm_authenticate( pam_
+ #if defined(VERSION) && VERSION == password
+         sys_log(LOG_DEBUG, "Password provided");
+ 
++#ifdef USE_TOKEN_AND_JSMN
++        // All this code only makes sense, if the pam module contacts the
++        // OP directly, which it does not in our case
+         long http_code = https_auth(MODE_ACCESS_TOKEN,
+                                     username,
+                                     password,
+@@ -335,12 +342,17 @@ PAM_EXTERN int pam_sm_authenticate( pam_
+                 }
+             }
+         }
+-        else if (config.verify_endpoint)
++#endif // USE_TOKEN_AND_JSMN
++        sys_log(LOG_DEBUG,"HERE I AM");
++
++        if (config.verify_endpoint)
+         {
++            sys_log(LOG_DEBUG,"LOUDER THAN A HURRICANE");
+             int len = strlen(config.verify_endpoint) + strlen(VERIFY_URL_PART) + strlen(username) + 1;
+             char* verify_url = (char*)malloc(len);
+             int cnt = snprintf(verify_url, len, "%s%s%s", config.verify_endpoint, VERIFY_URL_PART, username);
+             if (cnt >=0) {
++                sys_log(LOG_DEBUG,"1");
+                 long http_code = https_auth(MODE_VERIFY_USER,
+                                             "",
+                                             password, // in fact this is token
+@@ -350,17 +362,27 @@ PAM_EXTERN int pam_sm_authenticate( pam_
+                                             "",
+                                             &response,
+                                             &error);
++                sys_log(LOG_DEBUG,"2");
+                 if (http_code < 200 || http_code >= 300) {
++                    sys_log(LOG_DEBUG,"3");
+                     sys_log(LOG_ERR, "HTTP(S) request failed: error code %ld (%s)", http_code, err);
+                 } else {
++                    sys_log(LOG_DEBUG,"4");
+                     if (json_verification_answer_read(respo, &ver_answer) == 0) {                        
++                        sys_log(LOG_DEBUG,"5");
+                         status = ver_answer.verified ? PAM_SUCCESS: PAM_AUTH_ERR;
++                        sys_log(LOG_DEBUG,"6");
+                     }
+                     sys_log(LOG_DEBUG,"JSON verification status: %d (success: %d)\n", status, PAM_SUCCESS);
++                    sys_log(LOG_DEBUG,"7");
+                 }
++                sys_log(LOG_DEBUG,"8");
+             }
+             if (verify_url) free((void*)verify_url);
++            sys_log(LOG_DEBUG,"9");
+         }
++        sys_log(LOG_DEBUG,"10");
++
+ #endif
+     ending:
+     // Free HTTP call response structures
+--- a/pam-password-token/Makefile
++++ b/pam-password-token/Makefile
+@@ -1,5 +1,5 @@
+ CC      = gcc
+-CFLAGS  = -DVERSION=$(VERSION) -I../jsmn-web-tokens/include -g -O2 -fPIC -lpam
++CFLAGS  = -DVERSION=$(VERSION) -g -O2 -fPIC -lpam
+ LDFLAGS = -lcurl -lc -x --shared -lpam -laudit
+ LDFLAGS_EXTRA = -lrhonabwy
+ LIBNAME = pam_oidc
+@@ -10,10 +10,9 @@ DEB_TRIPLET := $(shell dpkg-architecture
+ TARGET_DIR = $(DESTDIR)/lib/$(DEB_TRIPLET)/security
+ TARGET_PASSWORD  = $(TARGET_DIR)/$(LIBNAME)_password.so
+ TARGET_TOKEN  = $(TARGET_DIR)/$(LIBNAME)_token.so
+-JSMN    = ../jsmn-web-tokens
+ COMMON  = ../common
+ VPATH = $(COMMON)
+-SOURCES = pam.c common.c base64.c token.c connect.c strrep.c file_io.c ini.c
++SOURCES = pam.c common.c base64.c connect.c strrep.c file_io.c ini.c
+ OBJECTS = $(patsubst %.c,obj$(VERSION)/%.o,$(SOURCES))
+ 
+ all: compile_token
