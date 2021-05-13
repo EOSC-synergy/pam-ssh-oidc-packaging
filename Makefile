@@ -41,7 +41,7 @@ package-clean:
 	@echo PACKAGE_CLEAN
 	quilt pop -a -f || true
 	./debian/rules clean
-	rm -rf common pam-password-token jsmn-web-tokens .patched
+	rm -rf common pam-password-token jsmn-web-tokens .patched .pc
 
 .PHONY: subdirs $(INSTALLDIRS)
 .PHONY: subdirs $(SUBDIRS)
@@ -55,13 +55,17 @@ get-sources:
 	mv upstream/common upstream/pam-password-token upstream/jsmn-web-tokens .
 	rm -rf upstream
 	rm -f .patched
-	#quilt push -a
+	rm -rf jsmn-web-tokens
 
 info:
 	@echo "DESTDIR:         $(DESTDIR)"
 	@echo "INSTALLDIRS:     $(INSTALLDIRS)"
 
 ### Dockers
+dockerised_most_packages: dockerised_deb_debian_buster\
+	dockerised_rpm_centos7\
+	dockerised_rpm_centos8\
+	dockerised_rpm_opensuse_tumbleweed
 dockerised_all_packages: dockerised_deb_debian_buster\
 	dockerised_deb_debian_bullseye\
 	dockerised_deb_ubuntu_bionic\
@@ -301,7 +305,7 @@ unpatch-for-rpm:
 
 .PHONY: srctar
 srctar: patch-for-rpm
-	@(cd ..; tar cf $(BASENAME)/$(SRC_TAR) $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
+	@(cd ..; tar cf $(BASENAME)/$(SRC_TAR) --exclude-vcs --exclude=.pc $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
 	mkdir -p rpm/rpmbuild/SOURCES
 	mv $(SRC_TAR) rpm/rpmbuild/SOURCES/${PKG_NAME}.tar
 
