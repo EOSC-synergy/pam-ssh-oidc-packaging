@@ -66,6 +66,7 @@ dockerised_most_packages: dockerised_deb_debian_buster\
 	dockerised_rpm_centos7\
 	dockerised_rpm_centos8\
 	dockerised_rpm_opensuse_tumbleweed
+
 dockerised_all_packages: dockerised_deb_debian_buster\
 	dockerised_deb_debian_bullseye\
 	dockerised_deb_ubuntu_bionic\
@@ -225,7 +226,7 @@ dockerised_rpm_centos8: docker_centos8
 dockerised_rpm_opensuse15.2: docker_opensuse15.2
 	@echo "Writing build log to $@.log"
 	@docker run -it --rm -v ${DOCKER_BASE}:/home/build opensuse15.2 \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse15.2 ${PKG_NAME}
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse15.2 ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_opensuse15.3
 dockerised_rpm_opensuse15.3: docker_opensuse15.3
