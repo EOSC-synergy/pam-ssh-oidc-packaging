@@ -1,0 +1,37 @@
+--- a/common/base64.c
++++ b/common/base64.c
+@@ -181,7 +181,8 @@ unsigned int base64_isaccesstoken(const
+         //printf("compiled, strlen =%ld\n", strlen(src));
+         regmatch_t matches[MAX_MATCHES + 1];
+         //cursor = source;
+-        for(int i = 0; i <= MAX_MATCHES; i++){
++        int i;
++        for(i = 0; i <= MAX_MATCHES; i++){
+             //printf("i: %d\n", i);
+             int tret = regexec(&regex, src, MAX_MATCHES + 1, matches, 0);
+             //printf("src=%s\n", src);
+@@ -372,7 +373,7 @@ unsigned char * base64_decode(const char
+     //printf("ans: %d, %d, %d\n", ans->fieldlength[0],
+     //                            ans->fieldlength[1],
+     //                            ans->fieldlength[2]);
+-    for (int i=0, j=THREE*2; i < THREE -1; i++, j-=2){
++    for (i=0, j=THREE*2; i < THREE -1; i++, j-=2){
+   	    padsum[i] = (ans->modulos >> j) & 3;
+   	    padcnt += padsum[i];
+   	    if (padsum[i] > 0) { 
+@@ -384,7 +385,7 @@ unsigned char * base64_decode(const char
+     }
+     //printf("padsno:%d, padcnt:%d\n", padsno, padcnt);
+     int lensrccopy = 0;//strlen(src);
+-    for (int i=0; i < THREE -1; i++){
++    for (i=0; i < THREE -1; i++){
+   	    //printf("padsum:%d, pads:%s\n", padsum[i], pads[i]);	
+         lensrccopy += ans->fieldlength[i];
+     }
+@@ -490,4 +491,4 @@ unsigned char * base64_decode(const char
+     if (srccopy)
+         free(srccopy);
+ 	  return out;
+-}
+\ No newline at end of file
++}
