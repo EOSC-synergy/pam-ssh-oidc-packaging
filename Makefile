@@ -55,7 +55,6 @@ get-sources:
 	mv upstream/common upstream/pam-password-token upstream/jsmn-web-tokens .
 	rm -rf upstream
 	rm -f .patched
-	rm -rf jsmn-web-tokens
 
 info:
 	@echo "DESTDIR:         $(DESTDIR)"
