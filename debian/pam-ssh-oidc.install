@@ -1,0 +1,3 @@
+etc/pam.d/pam-ssh-oidc-config.ini
+lib/x86_64-linux-gnu/security/pam_oidc_token.so
+documentation/README-pam-ssh-oidc.md /usr/share/doc/pam-ssh-oidc
