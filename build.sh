@@ -54,31 +54,11 @@ debian_copy_output() {
     #mv ../${PACKAGE}-dbgsym_* $OUTPUT/$DIST 2>/dev/null
 }
 
-centos7_install_dependencies () {
-    yum -y install centos-release-scl
-    yum -y install devtoolset-7-gcc*
-    yum -y install libcurl-devel pam-devel audit-libs-devel
-}
-centos7_patch_gcc_requirement () {
-    # This is a workaround for rpmbuild vs devtoolset:
-    # rpmbuild will not notice the actual version used by the system,
-    # hence we reduce the required version of gcc, and rely on the newer
-    # one actually being used.
-    sed s/"BuildRequires: cpp >= 6"/"BuildRequires: cpp >= 4"/ -i rpm/pam-ssh-oidc.spec
-    # Be futre proof :)
-    sed s/"BuildRequires: cpp >= 7"/"BuildRequires: cpp >= 4"/ -i rpm/pam-ssh-oidc.spec
-}
-centos8_install_dependencies () {
-    dnf -y group install "Development Tools"
+centos_install_dependencies () {
     yum -y install libcurl-devel pam-devel audit-libs-devel
 }
 opensuse15_install_dependencies() {
-    zypper -n install libcurl-devel pam-devel zypper audit-devel git
-}
-centos7_build_package() {
-    cd /tmp/build/$PACKAGE 
-    make srctar
-    echo make rpms | scl enable devtoolset-7 - 
+    zypper -n install libcurl-devel pam-devel audit-devel
 }
 rpm_build_package() {
     make srctar
@@ -107,15 +87,8 @@ case "$DIST" in
         debian_build_package
         debian_copy_output
     ;;
-    centos7)
-        centos7_install_dependencies
-        centos7_patch_gcc_requirement
-        centos7_build_package
-        centos7_build_srpm
-        rpm_copy_output
-    ;;
-    centos8)
-        centos8_install_dependencies
+    centos8|centos7)
+        centos_install_dependencies
         rpm_build_package
         rpm_copy_output
     ;;

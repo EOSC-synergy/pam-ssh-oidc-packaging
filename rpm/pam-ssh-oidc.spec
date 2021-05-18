@@ -1,6 +1,6 @@
 Name: pam-ssh-oidc
 Version: 0.1.2
-Release: 1
+Release: 6
 Summary: PAM Plugin allowing consumption of OIDC AccessTokens
 Group: Misc
 License: MIT-License

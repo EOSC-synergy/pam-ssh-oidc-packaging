@@ -1,12 +1,22 @@
 PKG_NAME  = pam-ssh-oidc
 PKG_NAME_UPSTREAM = pam-ssh-oidc
-VERSION := $(shell git tag -l | sort -V | tail -n 1 | sed s/v//)
+#VERSION := $(shell git tag -l | sort -V | tail -n 1 | sed s/v//)
+
+SPECFILE := rpm/${PKG_NAME}.spec
+RPM_VERSION := $(shell grep ^Version ${SPECFILE} | cut -d : -f 2 | sed s/\ //g)
+
+DEBIAN_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | cut -d \- -f 1)
+VERSION := $(DEBIAN_VERSION)
+
+
+# Parallel builds:
+MAKEFLAGS += -j5
 
 BASEDIR = $(PWD)
 BASENAME := $(notdir $(PWD))
 DOCKER_BASE=`dirname ${PWD}`
 PACKAGE=`basename ${PWD}`
-SRC_TAR:=$(PKG_NAME).tar
+SRC_TAR:=$(PKG_NAME).tar.gz
 
 SHELL=bash
 
@@ -41,7 +51,7 @@ package-clean:
 	@echo PACKAGE_CLEAN
 	quilt pop -a -f || true
 	./debian/rules clean
-	rm -rf common pam-password-token jsmn-web-tokens .patched
+	rm -rf common pam-password-token jsmn-web-tokens .patched .pc
 
 .PHONY: subdirs $(INSTALLDIRS)
 .PHONY: subdirs $(SUBDIRS)
@@ -55,13 +65,20 @@ get-sources:
 	mv upstream/common upstream/pam-password-token upstream/jsmn-web-tokens .
 	rm -rf upstream
 	rm -f .patched
-	#quilt push -a
 
 info:
-	@echo "DESTDIR:         $(DESTDIR)"
-	@echo "INSTALLDIRS:     $(INSTALLDIRS)"
+	@echo "DESTDIR:         >>$(DESTDIR)<<"
+	@echo "INSTALLDIRS:     >>$(INSTALLDIRS)<<"
+	@echo "VERSION:         >>$(VERSION)<<"
+	@echo "RPM_VERSION:     >>$(RPM_VERSION)<<"
+	@echo "DEBIAN_VERSION:  >>$(DEBIAN_VERSION)<<"
 
 ### Dockers
+dockerised_most_packages: dockerised_deb_debian_buster\
+	dockerised_rpm_centos7\
+	dockerised_rpm_centos8\
+	dockerised_rpm_opensuse_tumbleweed
+
 dockerised_all_packages: dockerised_deb_debian_buster\
 	dockerised_deb_debian_bullseye\
 	dockerised_deb_ubuntu_bionic\
@@ -92,7 +109,7 @@ docker_debian_buster:
 		"apt-get -y install build-essential dh-make quilt "\
 		"python3-virtualenv dh-virtualenv python3-venv devscripts git "\
     	"python3 python3-dev python3-pip python3-setuptools "| \
-	docker build --tag debian_buster -f - .
+	docker build --tag debian_buster -f - .  >> docker.log
 .PHONY: docker_debian_bullseye
 docker_debian_bullseye:
 	@echo -e "\ndebian_bullseye"
@@ -102,7 +119,7 @@ docker_debian_bullseye:
 		"apt-get -y install build-essential dh-make quilt "\
 		"python3-virtualenv dh-virtualenv python3-venv devscripts git "\
 		"python3 python3-dev python3-pip python3-setuptools "| \
-	docker build --tag debian_bullseye -f - .
+	docker build --tag debian_bullseye -f - .  >> docker.log
 .PHONY: docker_ubuntu_bionic
 docker_ubuntu_bionic:
 	@echo -e "\nubuntu_bionic"
@@ -112,7 +129,7 @@ docker_ubuntu_bionic:
 		"apt-get -y install build-essential dh-make quilt "\
 		"python3-virtualenv dh-virtualenv python3-venv devscripts git "\
 		"python3 python3-dev python3-pip python3-setuptools "| \
-	docker build --tag ubuntu_bionic -f - .
+	docker build --tag ubuntu_bionic -f - .  >> docker.log
 .PHONY: docker_ubuntu_focal
 docker_ubuntu_focal:
 	@echo -e "\nubuntu_focal"
@@ -124,7 +141,7 @@ docker_ubuntu_focal:
 		"apt-get -y install build-essential dh-make quilt "\
 		"python3-virtualenv python3-venv devscripts git "\
 		"python3 python3-dev python3-pip python3-setuptools "| \
-	docker build --tag ubuntu_focal -f - .
+	docker build --tag ubuntu_focal -f - .  >> docker.log
 .PHONY: docker_centos7
 docker_centos7:
 	@echo -e "\ncentos7"
@@ -132,42 +149,42 @@ docker_centos7:
 	"RUN yum -y install make rpm-build\n"\
 	"RUN yum -y groups mark convert\n"\
 	"RUN yum -y groupinstall \"Development tools\"\n" | \
-	docker build --tag centos7 -f - .
+	docker build --tag centos7 -f - .  >> docker.log
 .PHONY: docker_centos8
 docker_centos8:
 	@echo -e "\ncentos8"
 	@echo -e "FROM centos:8\n"\
 	"RUN yum install -y make rpm-build\n" \
 	"RUN dnf -y group install \"Development Tools\"\n" | \
-	docker build --tag centos8 -f -  .
+	docker build --tag centos8 -f -  .  >> docker.log
 .PHONY: docker_opensuse15.2
 docker_opensuse15.2:
 	@echo -e "\nopensuse-15.2"
 	@echo -e "FROM registry.opensuse.org/opensuse/leap:15.2\n"\
 	"RUN zypper -n install make rpm-build\n" \
 	"RUN zypper -n install -t pattern devel_C_C++" | \
-	docker build --tag opensuse15.2 -f -  .
+	docker build --tag opensuse15.2 -f -  .  >> docker.log
 .PHONY: docker_opensuse15.3
 docker_opensuse15.3:
 	@echo -e "\nopensuse-15.3"
 	@echo -e "FROM registry.opensuse.org/opensuse/leap:15.3\n"\
 	"RUN zypper -n install make rpm-build\n" \
 	"RUN zypper -n install -t pattern devel_C_C++" | \
-	docker build --tag opensuse15.3 -f -  .
+	docker build --tag opensuse15.3 -f -  .  >> docker.log
 .PHONY: docker_opensuse_tumbleweed
 docker_opensuse_tumbleweed:
 	@echo -e "\nopensuse_tumbleweed"
 	@echo -e "FROM registry.opensuse.org/opensuse/tumbleweed:latest\n"\
 	"RUN zypper -n install make rpm-build\n" \
 	"RUN zypper -n install -t pattern devel_C_C++" | \
-	docker build --tag opensuse_tumbleweed -f -  .
+	docker build --tag opensuse_tumbleweed -f -  .  >> docker.log
 .PHONY: docker_sle15
 docker_sle15:
 	@echo -e "\nsle15"
 	@echo -e "FROM registry.suse.com/suse/sle15\n"\
 	"RUN zypper -n install make rpm-build\n" \
 	"RUN zypper -n install -t pattern devel_C_C++" | \
-	docker build --tag sle15 -f -  .
+	docker build --tag sle15 -f -  .  >> docker.log
 
 .PHONY: docker_clean
 docker_clean:
@@ -185,54 +202,54 @@ docker_clean:
 .PHONY: dockerised_deb_debian_buster
 dockerised_deb_debian_buster: docker_debian_buster
 	@echo "Writing build log to $@.log"
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build debian_buster /home/build/${PACKAGE}/build.sh ${PACKAGE} debian_buster ${PKG_NAME} > $@.log
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build debian_buster /home/build/${PACKAGE}/build.sh ${PACKAGE} debian_buster ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_deb_debian_bullseye
 dockerised_deb_debian_bullseye: docker_debian_bullseye
 	@echo "Writing build log to $@.log"
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build debian_bullseye \
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build debian_bullseye \
 		/home/build/${PACKAGE}/build.sh ${PACKAGE} debian_bullseye ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_deb_ubuntu_bionic
 dockerised_deb_ubuntu_bionic: docker_ubuntu_bionic
 	@echo "Writing build log to $@.log"
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build ubuntu_bionic \
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build ubuntu_bionic \
 		/home/build/${PACKAGE}/build.sh ${PACKAGE} ubuntu_bionic ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_deb_ubuntu_focal
 dockerised_deb_ubuntu_focal: docker_ubuntu_focal
 	@echo "Writing build log to $@.log"
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build ubuntu_focal \
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build ubuntu_focal \
 		/home/build/${PACKAGE}/build.sh ${PACKAGE} ubuntu_focal ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_centos7
 dockerised_rpm_centos7: docker_centos7
 	@echo "Writing build log to $@.log"
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build centos7 \
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build centos7 \
 		/home/build/${PACKAGE}/build.sh ${PACKAGE} centos7 ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_centos8
 dockerised_rpm_centos8: docker_centos8
 	@echo "Writing build log to $@.log"
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build centos8 \
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build centos8 \
 		/home/build/${PACKAGE}/build.sh ${PACKAGE} centos8 ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_opensuse15.2
 dockerised_rpm_opensuse15.2: docker_opensuse15.2
 	@echo "Writing build log to $@.log"
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build opensuse15.2 \
-		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse15.2 ${PKG_NAME}
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build opensuse15.2 \
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse15.2 ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_opensuse15.3
 dockerised_rpm_opensuse15.3: docker_opensuse15.3
 	@echo "Writing build log to $@.log"
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build opensuse15.3 \
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build opensuse15.3 \
 		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse15.3 ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_rpm_opensuse_tumbleweed
 dockerised_rpm_opensuse_tumbleweed: docker_opensuse_tumbleweed
 	@echo "Writing build log to $@.log"
-	@docker run -it --rm -v ${DOCKER_BASE}:/home/build opensuse_tumbleweed \
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build opensuse_tumbleweed \
 		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse_tumbleweed ${PKG_NAME} > $@.log
 
 .PHONY: publish-to-repo
@@ -301,9 +318,9 @@ unpatch-for-rpm:
 
 .PHONY: srctar
 srctar: patch-for-rpm
-	@(cd ..; tar cf $(BASENAME)/$(SRC_TAR) $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
+	@(cd ..; tar czf $(BASENAME)/$(SRC_TAR) --exclude-vcs --exclude=.pc $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
 	mkdir -p rpm/rpmbuild/SOURCES
-	mv $(SRC_TAR) rpm/rpmbuild/SOURCES/${PKG_NAME}.tar
+	mv $(SRC_TAR) rpm/rpmbuild/SOURCES/${PKG_NAME}.tar.gz
 
 .PHONY: rpms
 rpms: rpm srpm 
