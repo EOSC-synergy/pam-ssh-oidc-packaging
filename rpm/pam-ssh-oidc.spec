@@ -1,69 +1,97 @@
 Name: pam-ssh-oidc
-Version: 0.1.2
-Release: 6
+%define ver %(head debian/changelog -n 1|cut -d \\\( -f 2|cut -d \\\) -f 1|cut -d \- -f 1)
+%define rel %(head debian/changelog -n 1|cut -d \\\( -f 2|cut -d \\\) -f 1|cut -d \- -f 2)
+Version: %{ver}
+Release: %{rel}
+
 Summary: PAM Plugin allowing consumption of OIDC AccessTokens
 Group: Misc
-License: MIT-License
-URL: https://git.scc.kit.edu:fum/fum_ldf-interface.git
-Source0: pam-ssh-oidc.tar
+License: MIT
+URL: https://github.com/EOSC-synergy/ssh-oidc
+Source0: pam-ssh-oidc.tar.gz
 
-BuildRequires: cpp >= 6
+# OpenSUSE likes to have a Group
+%if 0%{?suse_version} > 0
+Group: System/Libraries
+%endif
+
+BuildRequires: gcc
+BuildRequires: pam-devel
+BuildRequires: curl-devel
+BuildRequires: libcurl-devel
+
+# audit libs devel name is platform dependent
+#%if 0%{?fedora} || 0%{?rhel}
+#BuildRequires: audit-libs-devel
+#%else
+#BuildRequires: audit-devel
+#%endif
 
 BuildRoot:	%{_tmppath}/%{name}
+
+# define PAM_LIB_DIR, which is platform dependent
+%if 0%{?suse_version} > 0 && !0%{?usrmerged}
+%define PAM_LIB_DIR /%{_lib}/security
+%else
+%define PAM_LIB_DIR %{_libdir}/security
+%endif
 
 %define debug_package %{nil}
 
 %description
-PAM Plugin allowing consumption of OIDC AccessTokens
+PAM (Pluggable Authentication Modules) Plugin allowing consumption of OIDC
+AccessTokens
 
 %prep
 %setup -q
 
 %build
-make 
+cd pam-password-token && make
 
 %install
-echo "Buildroot: ${RPM_BUILD_ROOT}"
-echo "ENV: "
-env | grep -i rpm
-echo "PWD"
-pwd
-#make install INSTALL_PATH=${RPM_BUILD_ROOT}/usr MAN_PATH=${RPM_BUILD_ROOT}/usr/share/man CONFIG_PATH=${RPM_BUILD_ROOT}/etc
+rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=${RPM_BUILD_ROOT}
+install -D -d -m 755 $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}
+install -m 644 documentation/README-pam-ssh-oidc.md $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/README.md
+
+# On some OpenSUSE need to move module to /lib64/security
+%if 0%{?suse_version} > 0 && !0%{?usrmerged}
+mkdir -p ${RPM_BUILD_ROOT}%{PAM_LIB_DIR}
+mv -f ${RPM_BUILD_ROOT}%{_libdir}/security/* ${RPM_BUILD_ROOT}%{PAM_LIB_DIR}
+%endif
 
 %files
 %defattr(-,root,root,-)
-/etc/pam.d/pam-ssh-oidc-config.ini
-/usr/lib64/security/pam_oidc_token.so
+%config(noreplace) %{_sysconfdir}/pam.d/pam-ssh-oidc-config.ini
+%{PAM_LIB_DIR}/pam_oidc_token.so
+%docdir /usr/share/doc/
+/usr/share/doc/%{name}-%{version}/README.md
 
 %changelog
+* Thu May  6 2021 Mischa Salle <mischa.salle@gmail.com> 0.1.2-2
+- cleanup spec file
+* Fri Apr 23 2021 Marcus Hardt <hardt@kit.edu> 0.1.0-1
+- initial packaging of upstream
 
 %post
-# Test /etc/pam.d/sshd for adequate config:
-PAM_SSHD="/etc/pam.d/sshd"
-cat ${PAM_SSHD} | grep -v ^# | grep -q  "pam_oidc_token.so" || {
-    echo "######################################################################"
-    echo "#  Enabling configuration for pam_oidc_token.so in ${PAM_SSHD}"
-    echo "#  A backup is in ${PAM_SSHD}.dist"
-    echo "######################################################################"
-    test -e ${PAM_SSHD}.dist && mv ${PAM_SSHD}.dist /tmp
-    HEADLINE=`head -n 1 ${PAM_SSHD}`
-    mv ${PAM_SSHD} ${PAM_SSHD}.dist
-    echo ${HEADLINE} > ${PAM_SSHD}
-    echo "" >> ${PAM_SSHD}
-    echo "# use pam-ssh-oidc" >> ${PAM_SSHD}
-    echo "auth   sufficient pam_oidc_token.so config=/etc/pam.d/pam-ssh-oidc-config.ini" >> ${PAM_SSHD}
-    cat ${PAM_SSHD}.dist | grep -v "${HEADLINE}" >> ${PAM_SSHD}
-}
 # Test /etc/ssh/sshd for adequate config
-SSHD=/etc/ssh/sshd_config
+SSHD=%{_sysconfdir}/ssh/sshd_config
 # Check if ChalleneResponseAuthentication is already enabled:
-grep -q "^ChallengeResponseAuthentication yes" ${SSHD} || {
-    echo "######################################################################"
-    echo "#  pam-ssh-oidc detected that your /etc/ssh/sshd_config              #"
-    echo "#  does not contain 'ChallengeResponseAuthentication yes'            #"
-    echo "#  Consider setting this to yes, if login via pam-ssh does           #"
-    echo "#  not show the 'AccessToken: ' prompt. Note that this will          #"
-    echo "#  enable password login, even if 'Passwordauthentication no' is set #"
+test -e $SSHD && {
+    grep -q "^ChallengeResponseAuthentication yes" ${SSHD} || {
+        echo "### WARNING ##########################################################"
+        echo "#  pam-ssh-oidc detected that your ${SSHD}              #"
+        echo "#  does not contain 'ChallengeResponseAuthentication yes'            #"
+        echo "#  Consider setting this to yes, if login via pam-ssh does           #"
+        echo "#  not show the 'AccessToken: ' prompt. Note that this will          #"
+        echo "#  enable password login, even if 'Passwordauthentication no' is set #"
+        echo "######################################################################"
+    }
+}
+test -e $SSHD || {
+    echo "### WARNING ##########################################################"
+    echo "#  ssh daemon is not installed. At least I cannot find the           #"
+    echo "#  config file at ${SSHD}.                              #"
+    echo "#  This may be ok, just thought I should tell you.                   #"
     echo "######################################################################"
 }

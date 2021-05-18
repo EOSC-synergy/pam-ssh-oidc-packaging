@@ -2,24 +2,6 @@
 #DEBHELPER#
 ###############################################
 
-dh_patch_pam_ssh_config() {
-    CONFIG="/etc/pam.d/sshd"
-    # Check if pam-ssh-oidc is already enabled:
-    cat ${CONFIG} | grep -v ^# | grep -q  "pam_oidc_token.so" || {
-        echo "######################################################################"
-        echo "#  Enabling configuration for pam_oidc_token.so in ${CONFIG}"
-        echo "#  A backup is in ${CONFIG}.dist"
-        echo "######################################################################"
-        test -e ${CONFIG}.dist && mv ${CONFIG}.dist /tmp
-        HEADLINE=`head -n 1 ${CONFIG}`
-        mv ${CONFIG} ${CONFIG}.dist
-        echo ${HEADLINE} > ${CONFIG}
-        echo "" >> ${CONFIG}
-        echo "# use pam-ssh-oidc" >> ${CONFIG}
-        echo "auth   sufficient pam_oidc_token.so config=/etc/pam.d/pam-ssh-oidc-config.ini" >> ${CONFIG}
-        cat ${CONFIG}.dist | grep -v "${HEADLINE}" >> ${CONFIG}
-    }
-}
 dh_test_sshd_config(){
     SSHD=/etc/ssh/sshd_config
     # Check if ChalleneResponseAuthentication is already enabled:
@@ -36,10 +18,6 @@ dh_test_sshd_config(){
 
 case "$1" in
     configure|triggered|reconfigure)
-        dh_patch_pam_ssh_config
         dh_test_sshd_config
-        ;;
-    remove|purge)
-        dh_unpatch_pam_ssh_config
         ;;
 esac

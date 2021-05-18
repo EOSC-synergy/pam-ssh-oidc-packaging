@@ -1,0 +1,11 @@
+#%PAM-1.0
+
+# use pam-ssh-oidc
+auth       sufficient   pam_oidc_token.so config=/etc/pam.d/pam-ssh-oidc-config.ini
+#auth       include      common-auth
+account    include      common-account
+
+# Comment out next line to disable password login:
+#password   include      common-password
+
+session    include      common-session
