@@ -35,7 +35,7 @@ common_fix_output_permissions() {
 }
 debian_install_dependencies() {
     apt-get update
-    apt-get -y install libpam0g-dev libcurl4-openssl-dev libaudit-dev
+    apt-get -y install libpam0g-dev libcurl4-openssl-dev 
 }
 ubuntu_bionic_install_dependencies() {
     echo " deb http://security.ubuntu.com/ubuntu/ focal-security main restricted" >> /etc/apt/sources.list
@@ -55,10 +55,10 @@ debian_copy_output() {
 }
 
 centos_install_dependencies () {
-    yum -y install libcurl-devel pam-devel audit-libs-devel
+    yum -y install libcurl-devel pam-devel 
 }
 opensuse15_install_dependencies() {
-    zypper -n install libcurl-devel pam-devel audit-devel
+    zypper -n install libcurl-devel pam-devel 
 }
 rpm_build_package() {
     make srctar
