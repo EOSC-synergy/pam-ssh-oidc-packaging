@@ -1,6 +1,5 @@
 PKG_NAME  = pam-ssh-oidc
 PKG_NAME_UPSTREAM = pam-ssh-oidc
-#VERSION := $(shell git tag -l | sort -V | tail -n 1 | sed s/v//)
 
 SPECFILE := rpm/${PKG_NAME}.spec
 RPM_VERSION := $(shell grep ^Version ${SPECFILE} | cut -d : -f 2 | sed s/\ //g)
@@ -205,7 +204,8 @@ docker_clean:
 .PHONY: dockerised_deb_debian_buster
 dockerised_deb_debian_buster: docker_debian_buster
 	@echo "Writing build log to $@.log"
-	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build debian_buster /home/build/${PACKAGE}/build.sh ${PACKAGE} debian_buster ${PKG_NAME} > $@.log
+	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build debian_buster \
+		/home/build/${PACKAGE}/build.sh ${PACKAGE} debian_buster ${PKG_NAME} > $@.log
 
 .PHONY: dockerised_deb_debian_bullseye
 dockerised_deb_debian_bullseye: docker_debian_bullseye
@@ -324,10 +324,10 @@ srctar: patch-for-rpm
 	mkdir -p rpm/rpmbuild/SOURCES
 
 	@(cd ..; tar czf $(SRC_TAR) --exclude-vcs --exclude=.pc --exclude $(PGK_NAME)/config $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
-	mv ../$(SRC_TAR) rpm/rpmbuild/SOURCES/${PKG_NAME}.tar.gz
+	mv ../$(SRC_TAR) rpm/rpmbuild/SOURCES
 
 	@(cd ..; tar czf $(SRC_TAR_AC) $(PKG_NAME)/documentation/README-autoconfig.md $(PKG_NAME)/config/pam.d-sshd-suse --transform='s_${PKG_NAME}_${PKG_NAME_AC}-$(VERSION)_')
-	mv ../$(SRC_TAR_AC) rpm/rpmbuild/SOURCES/${PKG_NAME_AC}.tar.gz
+	mv ../$(SRC_TAR_AC) rpm/rpmbuild/SOURCES
 
 .PHONY: rpms
 rpms: rpm srpm 
