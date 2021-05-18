@@ -1,4 +1,4 @@
-pam-ssh-oidc (0.1.2-6) UNRELEASED; urgency=medium
+pam-ssh-oidc (0.1.2-8) UNRELEASED; urgency=medium
 
   [ Marcus Hardt ]
   * Initial packaging
@@ -8,6 +8,6 @@ pam-ssh-oidc (0.1.2-6) UNRELEASED; urgency=medium
   * Modify /etc/pam.d/sshd automatically
   * Notify user on installation, if sshd_config seems not to work properly
   * Add patch to stop logging accesstoken
-  * Remove jsmn-web-token dependency
-  
- -- Marcus Hardt <marcus@hardt-it.de>  Tue, 27 Apr 2021 07:01:32 PM CEST
+  * Split config to pam-ssh-oidc-autoconfig
+
+ -- Marcus Hardt <marcus@hardt-it.de>  Tue, 18 May 2021 16:00:00 +0200
