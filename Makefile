@@ -330,7 +330,7 @@ srctar: patch-for-rpm
 	mv ../$(SRC_TAR_AC) rpm/rpmbuild/SOURCES/${PKG_NAME_AC}.tar.gz
 
 .PHONY: rpms
-rpms: rpm srpm 
+rpms: srpm rpm 
 
 .PHONY: rpm
 rpm: srctar
