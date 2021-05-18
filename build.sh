@@ -61,6 +61,7 @@ opensuse15_install_dependencies() {
     zypper -n install libcurl-devel pam-devel 
 }
 rpm_build_package() {
+    cd /tmp/build/$PACKAGE
     make srctar
     make rpms
 }
