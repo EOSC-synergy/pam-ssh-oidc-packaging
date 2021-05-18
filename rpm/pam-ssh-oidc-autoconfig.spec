@@ -1,77 +1,66 @@
-Name: pam-ssh-oidc
+Name: pam-ssh-oidc-autoconfig
 %define version %(head debian/changelog  -n 1 | cut -d \\\( -f 2 | cut -d \\\) -f 1 | cut -d \- -f 1)
 %define release %(head debian/changelog  -n 1 | cut -d \\\( -f 2 | cut -d \\\) -f 1 | cut -d \- -f 2)
 Version: %{version}
 Release: %{release}
 
-Summary: PAM Plugin allowing consumption of OIDC AccessTokens
+Summary: PAM Plugin allowing consumption of OIDC AccessTokens - Autoconfig
 Group: Misc
 License: MIT
 URL: https://github.com/EOSC-synergy/ssh-oidc
-Source0: pam-ssh-oidc.tar.gz
+Source0: pam-ssh-oidc-autoconfig.tar.gz
 
 # OpenSUSE likes to have a Group
 %if 0%{?suse_version} > 0
 Group: System/Libraries
 %endif
 
-BuildRequires: gcc
-BuildRequires: pam-devel
-BuildRequires: curl-devel
-BuildRequires: libcurl-devel
-
-# audit libs devel name is platform dependent
-%if 0%{?fedora} || 0%{?rhel}
-BuildRequires: audit-libs-devel
-%else
-BuildRequires: audit-devel
-%endif
-
 BuildRoot:	%{_tmppath}/%{name}
-
-# define pamdir, which is platform dependent
-%if 0%{?suse_version} > 0 && !0%{?usrmerged}
-%define pamdir /%{_lib}/security
-%else
-%define pamdir %{_libdir}/security
-%endif
-
-%define debug_package %{nil}
 
 %description
 PAM (Pluggable Authentication Modules) Plugin allowing consumption of OIDC
-AccessTokens
+AccessTokens. This package automatically configures PAM to support
+pam-ssh-oidc
+
+Requires: pam-ssh-oidc >= 0.1.2-6
 
 %prep
 %setup -q
 
-%build
-cd pam-password-token && make
-
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=${RPM_BUILD_ROOT}
-
-# On some OpenSUSE need to move module to /lib64/security
-%if 0%{?suse_version} > 0 && !0%{?usrmerged}
-mkdir -p ${RPM_BUILD_ROOT}%{pamdir}
-mv -f ${RPM_BUILD_ROOT}%{_libdir}/security/* ${RPM_BUILD_ROOT}%{pamdir}
-%endif
+mkdir -p $RPM_BUILD_ROOT
+echo "PWD: "
+pwd
+mkdir -p $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}
+cp README.md $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/README.md
 
 %files
 %defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/pam.d/pam-ssh-oidc-config.ini
-%{pamdir}/pam_oidc_token.so
 %docdir /usr/share/doc/
 /usr/share/doc/%{name}-%{version}/README.md
 
 %changelog
-* Thu May  6 2021 Mischa Salle <mischa.salle@gmail.com> 0.1.2-2
-- cleanup spec file
 * Fri Apr 23 2021 Marcus Hardt <hardt@kit.edu> 0.1.0-1
 - initial packaging of upstream
 
 %post
+#T est /etc/pam.d/sshd for adequate config:
+PAM_SSHD="/etc/pam.d/sshd"
+cat ${PAM_SSHD} | grep -v ^# | grep -q  "pam_oidc_token.so" || {
+    echo "######################################################################"
+    echo "#  Enabling configuration for pam_oidc_token.so in ${PAM_SSHD}"
+    echo "#  A backup is in ${PAM_SSHD}.dist"
+    echo "######################################################################"
+    test -e ${PAM_SSHD}.dist && mv ${PAM_SSHD}.dist /tmp
+    HEADLINE=`head -n 1 ${PAM_SSHD}`
+    mv ${PAM_SSHD} ${PAM_SSHD}.dist
+    echo ${HEADLINE} > ${PAM_SSHD}
+    echo "" >> ${PAM_SSHD}
+    echo "# use pam-ssh-oidc" >> ${PAM_SSHD}
+    echo "auth   sufficient pam_oidc_token.so config=/etc/pam.d/pam-ssh-oidc-config.ini" >> ${PAM_SSHD}
+    cat ${PAM_SSHD}.dist | grep -v "${HEADLINE}" >> ${PAM_SSHD}
+}
 # Test /etc/ssh/sshd for adequate config
 SSHD=/etc/ssh/sshd_config
 # Check if ChalleneResponseAuthentication is already enabled:
@@ -84,3 +73,4 @@ grep -q "^ChallengeResponseAuthentication yes" ${SSHD} || {
     echo "#  enable password login, even if 'Passwordauthentication no' is set #"
     echo "######################################################################"
 }
+

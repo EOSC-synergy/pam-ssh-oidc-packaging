@@ -10,13 +10,16 @@ VERSION := $(DEBIAN_VERSION)
 
 
 # Parallel builds:
-MAKEFLAGS += -j5
+MAKEFLAGS += -j9
 
 BASEDIR = $(PWD)
 BASENAME := $(notdir $(PWD))
 DOCKER_BASE=`dirname ${PWD}`
 PACKAGE=`basename ${PWD}`
 SRC_TAR:=$(PKG_NAME).tar.gz
+
+PKG_NAME_AC:=pam-ssh-oidc-autoconfig
+SRC_TAR_AC:=$(PKG_NAME_AC).tar.gz
 
 SHELL=bash
 
@@ -35,6 +38,11 @@ INSTALLDIRS = $(SUBDIRS:%=install-%)
 install: $(INSTALLDIRS)
 $(INSTALLDIRS):
 	$(MAKE) -C $(@:install-%=%) install
+	mkdir -p $(DESTDIR)/usr/share/doc/pam-ssh-oidc-${VERSION}
+	install README.md $(DESTDIR)/usr/share/doc/pam-ssh-oidc-${VERSION}
+
+	#mkdir -p $(DESTDIR)/usr/share/doc/pam-ssh-oidc-autoconfig-${VERSION}
+	#install README.md $(DESTDIR)/usr/share/doc/pam-ssh-oidc-autoconfig-${VERSION}
 
 CLEANDIRS = $(SUBDIRS:%=clean-%)
 
@@ -318,9 +326,13 @@ unpatch-for-rpm:
 
 .PHONY: srctar
 srctar: patch-for-rpm
-	@(cd ..; tar czf $(BASENAME)/$(SRC_TAR) --exclude-vcs --exclude=.pc $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
 	mkdir -p rpm/rpmbuild/SOURCES
-	mv $(SRC_TAR) rpm/rpmbuild/SOURCES/${PKG_NAME}.tar.gz
+
+	@(cd ..; tar czf $(SRC_TAR) --exclude-vcs --exclude=.pc $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
+	mv ../$(SRC_TAR) rpm/rpmbuild/SOURCES/${PKG_NAME}.tar.gz
+
+	@(cd ..; tar czf $(SRC_TAR_AC) $(PKG_NAME)/README.md --transform='s_${PKG_NAME}_${PKG_NAME_AC}-$(VERSION)_')
+	mv ../$(SRC_TAR_AC) rpm/rpmbuild/SOURCES/${PKG_NAME_AC}.tar.gz
 
 .PHONY: rpms
 rpms: rpm srpm 
@@ -328,8 +340,10 @@ rpms: rpm srpm
 .PHONY: rpm
 rpm: srctar
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}.spec
+	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}-autoconfig.spec
 
 .PHONY: srpm
 srpm: srctar
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bs  rpm/${PKG_NAME}.spec
+	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bs  rpm/${PKG_NAME}-autoconfig.spec
 
