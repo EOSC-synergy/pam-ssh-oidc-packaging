@@ -13,7 +13,7 @@
 +++ b/pam-password-token/pam-ssh-oidc-config.ini
 @@ -0,0 +1,5 @@
 +[user_verification]
-+; if local is set to false then user verification is based upon verify_endpoint,
-+; otherwise userinfo_endpoint is used
++; if local is set to false then user verification is based upon verify_endpoint.
++; This could be the motley-cue endpoint
 +local = false
 +verify_endpoint = http://localhost:8080/verify_user
