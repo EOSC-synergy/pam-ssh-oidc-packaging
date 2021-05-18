@@ -28,7 +28,7 @@ SUBDIRS = pam-password-token
 CLEANDIRS = $(SUBDIRS)
 
 
-all: info $(SUBDIRS)
+all: $(SUBDIRS)
 
 $(SUBDIRS):
 	$(MAKE) -C $@
@@ -38,11 +38,6 @@ INSTALLDIRS = $(SUBDIRS:%=install-%)
 install: $(INSTALLDIRS)
 $(INSTALLDIRS):
 	$(MAKE) -C $(@:install-%=%) install
-	mkdir -p $(DESTDIR)/usr/share/doc/pam-ssh-oidc-${VERSION}
-	install README.md $(DESTDIR)/usr/share/doc/pam-ssh-oidc-${VERSION}
-
-	#mkdir -p $(DESTDIR)/usr/share/doc/pam-ssh-oidc-autoconfig-${VERSION}
-	#install README.md $(DESTDIR)/usr/share/doc/pam-ssh-oidc-autoconfig-${VERSION}
 
 CLEANDIRS = $(SUBDIRS:%=clean-%)
 
@@ -328,10 +323,10 @@ unpatch-for-rpm:
 srctar: patch-for-rpm
 	mkdir -p rpm/rpmbuild/SOURCES
 
-	@(cd ..; tar czf $(SRC_TAR) --exclude-vcs --exclude=.pc $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
+	@(cd ..; tar czf $(SRC_TAR) --exclude-vcs --exclude=.pc --exclude $(PGK_NAME)/config $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(VERSION)_')
 	mv ../$(SRC_TAR) rpm/rpmbuild/SOURCES/${PKG_NAME}.tar.gz
 
-	@(cd ..; tar czf $(SRC_TAR_AC) $(PKG_NAME)/README.md --transform='s_${PKG_NAME}_${PKG_NAME_AC}-$(VERSION)_')
+	@(cd ..; tar czf $(SRC_TAR_AC) $(PKG_NAME)/documentation/README-autoconfig.md $(PKG_NAME)/config/pam.d-sshd-suse --transform='s_${PKG_NAME}_${PKG_NAME_AC}-$(VERSION)_')
 	mv ../$(SRC_TAR_AC) rpm/rpmbuild/SOURCES/${PKG_NAME_AC}.tar.gz
 
 .PHONY: rpms
