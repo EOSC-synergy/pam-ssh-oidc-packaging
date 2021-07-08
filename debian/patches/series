@@ -3,3 +3,4 @@ create-install-dirs
 select-packages-to-build
 fix-config-ini
 remove-libaudit
+reduce-logging

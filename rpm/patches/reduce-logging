@@ -1,0 +1,74 @@
+--- a/pam-password-token/pam.c
++++ b/pam-password-token/pam.c
+@@ -185,12 +185,12 @@ PAM_EXTERN int pam_sm_authenticate( pam_
+     msg[0].msg_style = PAM_PROMPT_ECHO_OFF;
+     const char prompt[] = "Password:";
+     msg[0].msg = prompt;
+-    sys_log(LOG_DEBUG, "%s", prompt);
++    /**sys_log(LOG_DEBUG, "%s", prompt);*/
+ #elif defined(TOKEN)
+     msg[0].msg_style = PAM_PROMPT_ECHO_ON;
+     const char prompt[] = "Access Token:";
+     msg[0].msg = prompt;
+-    sys_log(LOG_DEBUG, "%s", prompt);
++    /**sys_log(LOG_DEBUG, "%s", prompt);*/
+ #endif
+     
+     ans.modulos = 0;
+@@ -198,7 +198,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_
+     if ((retval = converse(pamh, 1, pmsg, &resp)) != PAM_SUCCESS)
+         // if this function fails, make sure that ChallengeResponseAuthentication in sshd_config is set to yes            
+         goto error;
+-    sys_log(LOG_DEBUG, "Conversation succeeded: ");
++    /**sys_log(LOG_DEBUG, "Conversation succeeded: ");*/
+     // retrieving user input
+     if (resp) {
+         if ((flags & PAM_DISALLOW_NULL_AUTHTOK) && resp[0].resp == NULL) {
+@@ -342,7 +342,9 @@ PAM_EXTERN int pam_sm_authenticate( pam_
+                     if (json_verification_answer_read(respo, &ver_answer) == 0) {                        
+                         status = ver_answer.verified ? PAM_SUCCESS: PAM_AUTH_ERR;
+                     }
+-                    sys_log(LOG_DEBUG,"JSON verification status: %d (success: %d)\n", status, PAM_SUCCESS);
++                    if (status != 0){
++                        sys_log(LOG_DEBUG,"JSON verification status: %d (success: %d)\n", status, PAM_SUCCESS);
++                    }
+                 }
+             }
+             if (verify_url) free((void*)verify_url);
+@@ -366,7 +368,9 @@ PAM_EXTERN int pam_sm_authenticate( pam_
+     error:        
+         if (err)
+             free(err);
+-    sys_log(LOG_DEBUG, "Returning code: %d, (success=%d) ", status, PAM_SUCCESS);
++    if (status != 0) {
++        sys_log(LOG_DEBUG, "Returning code: %d, (success=%d) ", status, PAM_SUCCESS);
++    }
+     return status;
+ 
+ }
+--- a/common/connect.c
++++ b/common/connect.c
+@@ -216,7 +216,7 @@ long https_auth(Mode mode,
+         sys_log(LOG_DEBUG, "Calling endpoint: %s", url);
+         curl_easy_setopt(curl, CURLOPT_URL, url) ;
+         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L );
++        /**curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L );*/
+         curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
+         curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, my_trace);
+         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error);
+@@ -228,9 +228,11 @@ long https_auth(Mode mode,
+         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+         
+         resp[write_result.pos] = '\0';
+-        sys_log(LOG_DEBUG, "response: '%s'", resp);
+-        sys_log(LOG_DEBUG, "error: '%s'", error);
+-        sys_log(LOG_DEBUG, "http_code: '%d'", http_code);
++        if(http_code != 200){
++            sys_log(LOG_DEBUG, "response: '%s'", resp);
++            sys_log(LOG_DEBUG, "http_code: '%d'", http_code);
++            sys_log(LOG_DEBUG, "error: '%s'", error);
++        }
+         if (resp != NULL){
+             if (**response != NULL){            
+                 if (strlen(resp) != strlen(**response))
