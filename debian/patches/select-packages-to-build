@@ -1,7 +1,7 @@
 --- a/pam-password-token/Makefile
 +++ b/pam-password-token/Makefile
 @@ -16,7 +16,7 @@ VPATH = $(COMMON)
- SOURCES = pam.c common.c base64.c token.c connect.c strrep.c file_io.c ini.c
+ SOURCES = pam.c common.c base64.c token.c connect.c strrep.c ini.c
  OBJECTS = $(patsubst %.c,obj$(VERSION)/%.o,$(SOURCES))
  
 -all: compile_password compile_token
