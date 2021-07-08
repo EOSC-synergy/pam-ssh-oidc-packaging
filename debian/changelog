@@ -2,6 +2,7 @@ pam-ssh-oidc (0.1.3-1) UNRELEASED; urgency=medium
 
   [ Marcus Hardt ]
   * Incorprate changes from upstream
+  * Silence log output (libcurl in particular)
 
  -- Marcus Hardt <marcus@hardt-it.de>  Thu, 08 Jul 2021 17:53:10 +0200
 
