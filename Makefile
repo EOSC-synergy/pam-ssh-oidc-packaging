@@ -53,7 +53,7 @@ package-clean:
 	@echo PACKAGE_CLEAN
 	quilt pop -a -f || true
 	./debian/rules clean
-	rm -rf common pam-password-token jsmn-web-tokens .patched .pc
+	rm -rf common pam-password-token jsmn-web-tokens .patched .pc upstream
 
 .PHONY: subdirs $(INSTALLDIRS)
 .PHONY: subdirs $(SUBDIRS)

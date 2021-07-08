@@ -1,7 +1,7 @@
 --- a/pam-password-token/Makefile
 +++ b/pam-password-token/Makefile
-@@ -14,7 +14,7 @@
- SOURCES = pam.c common.c base64.c token.c connect.c strrep.c file_io.c ini.c
+@@ -16,7 +16,7 @@ VPATH = $(COMMON)
+ SOURCES = pam.c common.c base64.c token.c connect.c strrep.c ini.c
  OBJECTS = $(patsubst %.c,obj$(VERSION)/%.o,$(SOURCES))
  
 -all: compile_password compile_token
@@ -9,3 +9,12 @@
  
  compile_password:
  	@- if ! test -e objpassword; then mkdir objpassword; fi	
+@@ -59,7 +59,7 @@ install_password:
+ install_token:
+ 	ld $(LDFLAGS) -o $(TARGET_TOKEN) objtoken/*.o
+ 
+-install: install_dirs install_password install_token
++install: install_dirs install_token
+ 	@echo "Copying config file"
+ 	cp $(CONFIG_FILE) $(CONFIG_DIR)
+ 	@echo "Please update /etc/pam.d/config.ini file accordingly"
