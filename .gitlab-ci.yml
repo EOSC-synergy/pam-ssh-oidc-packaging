@@ -10,6 +10,8 @@ variables:
 
 .deb-before-script: &deb-before-script
   - make get-sources
+  - ls -la
+  - find
 
 .rpm-before-script: &rpm-before-script
   - make get-sources
