@@ -9,22 +9,11 @@ variables:
   DOCKER_IMAGE_NAME: 'pam-ssh-oidc-packaging'
 
 
-.oidc-agent-deb-before-script: &oidc-agent-deb-before-script
-  - git clone -b debian/dev_`cat VERSION` http://salsa.debian.org/debian/oidc-agent.git delme
-  - ls -la
-  - test -e debian && ls -la debian
-  - test -e ddocker && ls -la ls -la docker
-  - test -e debian ||           mv delme/debian .
-  - test -e docker/debian.mk || mv delme/docker/debian.mk docker/
-  - rm -rf delme
-
 
 build-debian-buster:
   extends:
     - .build-debian-buster
     - .on-push-and-master
-  before_script:
-    - *oidc-agent-deb-before-script
   script:
     - make buster-debsource
     - dpkg-buildpackage -uc -us
@@ -33,8 +22,6 @@ build-debian-bullseye:
   extends:
     - .build-debian-bullseye
     - .on-push-and-master
-  before_script:
-    - *oidc-agent-deb-before-script
 
 #build-debian-bookworm:
 #  extends:
