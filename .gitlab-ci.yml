@@ -8,12 +8,20 @@ variables:
   DOCKER_IMAGE_NAMESPACE: 'marcvs/build'
   DOCKER_IMAGE_NAME: 'pam-ssh-oidc-packaging'
 
+.deb-before-script: &deb-before-script
+  - make get-sources
+
+.rpm-before-script: &rpm-before-script
+  - make get-sources
+  - make patch-for-rpm
 
 
 build-debian-buster:
   extends:
     - .build-debian-buster
     - .on-push-and-master
+before_script:
+  - *deb-before-script
   script:
     - make buster-debsource
     - dpkg-buildpackage -uc -us
@@ -22,6 +30,8 @@ build-debian-bullseye:
   extends:
     - .build-debian-bullseye
     - .on-push-and-master
+before_script:
+  - *deb-before-script
 
 #build-debian-bookworm:
 #  extends:
