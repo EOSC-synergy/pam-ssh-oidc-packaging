@@ -24,9 +24,6 @@ build-debian-buster:
     - .on-push-and-master
   before_script:
     - *deb-before-script
-  script:
-    - make buster-debsource
-    - dpkg-buildpackage -uc -us
 
 build-debian-bullseye:
   extends:
