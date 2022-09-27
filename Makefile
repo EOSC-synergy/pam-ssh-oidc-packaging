@@ -48,7 +48,11 @@ $(CLEANDIRS):
 
 distclean: clean
 	rm -rf rpm/rpmbuild
-	rm -rf upstream
+	rm -rf upstream 
+
+marcusclean: distclean
+	rm -rf common pam-password-token jsmn-web-tokens
+	rm -rf .pc .patched
 
 package-clean:
 	@echo PACKAGE_CLEAN
@@ -65,8 +69,9 @@ package-clean:
 get-sources:
 	@echo GET-SOURCES
 	git clone https://git.man.poznan.pl/stash/scm/pracelab/pam.git upstream -b develop
-	mv upstream/common.h upstream/pam-password-token.h upstream/jsmn-web-tokens.h .
-	rm -rf upstream
+	(cd upstream; git checkout 2730181aa3129738b022181d848adb0f48052b60)
+	mv upstream/common upstream/pam-password-token upstream/jsmn-web-tokens .
+	#rm -rf upstream
 	rm -f .patched
 
 info:
