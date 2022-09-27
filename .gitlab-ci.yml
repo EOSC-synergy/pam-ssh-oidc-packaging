@@ -20,8 +20,8 @@ build-debian-buster:
   extends:
     - .build-debian-buster
     - .on-push-and-master
-before_script:
-  - *deb-before-script
+  before_script:
+    - *deb-before-script
   script:
     - make buster-debsource
     - dpkg-buildpackage -uc -us
@@ -30,8 +30,8 @@ build-debian-bullseye:
   extends:
     - .build-debian-bullseye
     - .on-push-and-master
-before_script:
-  - *deb-before-script
+  before_script:
+    - *deb-before-script
 
 #build-debian-bookworm:
 #  extends:
