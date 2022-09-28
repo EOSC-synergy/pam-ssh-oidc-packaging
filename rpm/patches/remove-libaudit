@@ -2,7 +2,7 @@
 +++ b/pam-password-token/Makefile
 @@ -1,6 +1,6 @@
  CC      = gcc
- CFLAGS  = -DTYPE=$(TYPE) -I../jsmn-web-tokens/include -g -O2 -fPIC -lpam
+ CFLAGS  = -DTYPE=$(VERSION) -I../jsmn-web-tokens/include -g -O2 -fPIC -lpam
 -LDFLAGS = -lcurl -lc -x --shared -lpam -laudit
 +LDFLAGS = -lcurl -lc -x --shared -lpam
  LDFLAGS_EXTRA = -lrhonabwy
