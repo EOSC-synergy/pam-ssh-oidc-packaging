@@ -37,6 +37,8 @@ build-debian-bookworm:
   before_script:
     - *deb-before-script
 
+
+
 build-ubuntu-focal:
   extends:
     - .build-ubuntu-focal
@@ -57,18 +59,9 @@ build-ubuntu-kinetic:
     - .on-push-and-master
   before_script:
     - *deb-before-script
-#
-#
-#build-centos-7:
-#  extends:
-#    - .build-centos-7
-#    - .on-push-and-master
-#  #before_script:
-#  #  - |
-#  #    # Force RPM's python-bytecompile script to use python3
-#  #    sed "s@^default_python@default_python=python3\n#default_python@" -i /usr/lib/rpm/brp-python-bytecompile
-#  #    echo "typing-extensions" >> requirements.txt
-#
+
+
+
 build-centos-7:
   extends:
     - .build-centos-7
@@ -90,34 +83,44 @@ build-centos-stream:
   before_script:
     - *rpm-before-script
 
-#build-rockylinux-8:
-#  extends:
-#    - .build-rockylinux-8
-#    - .never
-#
-#build-rockylinux-8.5:
-#  extends:
-#    - .build-rockylinux-85
-#    - .on-push-and-master
-#
-#
-#build-opensuse-leap-15.3:
-#  extends:
-#    - .build-opensuse-leap-153
-#    - .never
-#
-#build-opensuse-leap-15.4:
-#  extends:
-#    - .build-opensuse-leap-154
-#    - .on-push-and-master
-#
-#build-opensuse-tumbleweed:
-#  extends:
-#    - .build-opensuse-tumbleweed
-#    - .on-push-and-master
-#
+
+
+build-rockylinux-8.5:
+  extends:
+    - .build-rockylinux-85
+    - .on-push-and-master
+  before_script:
+    - *rpm-before-script
+
+
+
+# Fedora container build fails with some GPG issues
 #build-fedora-36:
 #  extends:
 #    - .build-fedora-36
 #    - .on-push-and-master
+#  before_script:
+#    - *rpm-before-script
 
+
+
+build-opensuse-leap-15.3:
+  extends:
+    - .build-opensuse-leap-153
+    - .never
+  before_script:
+    - *rpm-before-script
+
+build-opensuse-leap-15.4:
+  extends:
+    - .build-opensuse-leap-154
+    - .on-push-and-master
+  before_script:
+    - *rpm-before-script
+
+build-opensuse-tumbleweed:
+  extends:
+    - .build-opensuse-tumbleweed
+    - .on-push-and-master
+  before_script:
+    - *rpm-before-script
