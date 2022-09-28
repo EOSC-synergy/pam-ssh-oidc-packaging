@@ -32,50 +32,50 @@ build-debian-bullseye:
   before_script:
     - *deb-before-script
 
-#build-debian-bookworm:
-#  extends:
-#    - .build-debian-bookworm
-#    - .on-push-and-master
-#  before_script:
-#    - *oidc-agent-deb-before-script
-#
-#build-ubuntu-focal:
-#  extends:
-#    - .build-ubuntu-focal
-#    - .on-push-and-master
-#  before_script:
-#    - *oidc-agent-deb-before-script
-#  script:
-#    - make focal-debsource
-#    - dpkg-buildpackage -uc -us
-#
-#build-ubuntu-hirsute:
-#  extends:
-#    - .build-ubuntu-hirsute
-#    - .on-master
-#  before_script:
-#    - *oidc-agent-deb-before-script
-#
-#build-ubuntu-impish:
-#  extends:
-#    - .build-ubuntu-impish
-#    - .on-master
-#  before_script:
-#    - *oidc-agent-deb-before-script
-#
-#build-ubuntu-jammy:
-#  extends:
-#    - .build-ubuntu-jammy
-#    - .on-push-and-master
-#  before_script:
-#    - *oidc-agent-deb-before-script
-#
-#build-ubuntu-kinetic:
-#  extends:
-#    - .build-ubuntu-kinetic
-#    - .on-master
-#  before_script:
-#    - *oidc-agent-deb-before-script
+build-debian-bookworm:
+  extends:
+    - .build-debian-bookworm
+    - .on-push-and-master
+  before_script:
+    - *deb-before-script
+
+build-ubuntu-focal:
+  extends:
+    - .build-ubuntu-focal
+    - .on-push-and-master
+  before_script:
+    - *deb-before-script
+  script:
+    - make focal-debsource
+    - dpkg-buildpackage -uc -us
+
+build-ubuntu-hirsute:
+  extends:
+    - .build-ubuntu-hirsute
+    - .on-push-and-master
+  before_script:
+    - *deb-before-script
+
+build-ubuntu-impish:
+  extends:
+    - .build-ubuntu-impish
+    - .on-push-and-master
+  before_script:
+    - *deb-before-script
+
+build-ubuntu-jammy:
+  extends:
+    - .build-ubuntu-jammy
+    - .on-push-and-master
+  before_script:
+    - *deb-before-script
+
+build-ubuntu-kinetic:
+  extends:
+    - .build-ubuntu-kinetic
+    - .on-push-and-master
+  before_script:
+    - *deb-before-script
 #
 #
 #build-centos-7:
@@ -91,7 +91,7 @@ build-debian-bullseye:
 #build-centos-8:
 #  extends:
 #    - .build-centos-8
-#    - .on-master
+#    - .on-push-and-master
 #
 #build-centos-stream:
 #  extends:
@@ -107,7 +107,7 @@ build-debian-bullseye:
 #build-rockylinux-8.5:
 #  extends:
 #    - .build-rockylinux-85
-#    - .on-master
+#    - .on-push-and-master
 #
 #
 #build-opensuse-leap-15.3:
@@ -118,7 +118,7 @@ build-debian-bullseye:
 #build-opensuse-leap-15.4:
 #  extends:
 #    - .build-opensuse-leap-154
-#    - .on-master
+#    - .on-push-and-master
 #
 #build-opensuse-tumbleweed:
 #  extends:
