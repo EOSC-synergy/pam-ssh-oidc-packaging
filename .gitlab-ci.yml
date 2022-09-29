@@ -60,6 +60,16 @@ build-ubuntu-kinetic:
   before_script:
     - *deb-before-script
 
+build-ubuntu-hirsute:
+  extends:
+    - .build-ubuntu-hirsute
+    - .never
+
+build-ubuntu-impish:
+  extends:
+    - .build-ubuntu-hirsute
+    - .never
+
 
 
 build-centos-7:
