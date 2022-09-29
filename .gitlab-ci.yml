@@ -94,6 +94,10 @@ build-centos-stream:
     - *rpm-before-script
 
 
+build-rockylinux-8:
+  extends:
+    - .build-rockylinux-85
+    - .never
 
 build-rockylinux-8.5:
   extends:
