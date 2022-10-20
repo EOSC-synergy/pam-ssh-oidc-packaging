@@ -64,6 +64,8 @@ package-clean:
 get-sources:
 	@echo GET-SOURCES
 	git clone https://git.man.poznan.pl/stash/scm/pracelab/pam.git upstream -b develop
+	# the (broken) master was using  2730181aa31
+	(cd upstream; git checkout 2b253ede076)
 	mv upstream/common upstream/pam-password-token upstream/jsmn-web-tokens .
 	rm -rf upstream
 	rm -f .patched
