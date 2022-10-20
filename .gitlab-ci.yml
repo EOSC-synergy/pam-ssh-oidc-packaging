@@ -4,7 +4,7 @@ include:
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs.yml'
 
 variables:
-  STAGING_BRANCH_NAME: 'devel'
+  #STAGING_BRANCH_NAME: 'devel'
   DOCKER_IMAGE_NAMESPACE: 'marcvs/build'
   DOCKER_IMAGE_NAME: 'pam-ssh-oidc-packaging'
   REPO_BASE: '/var/www/prerel'
