@@ -1,4 +1,12 @@
-pam-ssh-oidc (0.1.2-9) UNRELEASED; urgency=medium
+pam-ssh-oidc (0.2.0-1) UNRELEASED; urgency=medium
+
+  [ Marcus Hardt ]
+  * Specify clear commit number to remove the bug introduced earlier
+
+ -- Marcus Hardt <marcus@hardt-it.de>  Thu, 20 Oct 2022 12:39:24 +0200
+
+
+pam-ssh-oidc (0.1.2-8) UNRELEASED; urgency=medium
 
   [ Marcus Hardt ]
   * Initial packaging
