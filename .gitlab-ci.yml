@@ -4,9 +4,13 @@ include:
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs.yml'
 
 variables:
-  #STAGING_BRANCH_NAME: 'devel'
+  # These variables are set globally here:
   DOCKER_IMAGE_NAMESPACE: 'marcvs/build'
   DOCKER_IMAGE_NAME: 'pam-ssh-oidc-packaging'
+  # The following varialbes can be overwritten only in specific targets
+  # REPO_BASE
+  # REPO_USER
+  # REPO_HOST
 
 .deb-before-script: &deb-before-script
   - make get-sources
@@ -22,8 +26,8 @@ build-debian-buster:
     - .on-push-and-master
   before_script:
     - *deb-before-script
-  variables:
-    REPO_BASE: '/var/www/prerel'
+  # variables:
+  #   REPO_BASE: '/var/www/prerel'
 
 build-debian-bullseye:
   extends:
@@ -47,7 +51,6 @@ build-ubuntu-focal:
     - .on-push-and-master
   before_script:
     - *deb-before-script
-
 build-ubuntu-jammy:
   extends:
     - .build-ubuntu-jammy
@@ -130,6 +133,13 @@ build-opensuse-leap-15.3:
 build-opensuse-leap-15.4:
   extends:
     - .build-opensuse-leap-154
+    - .on-push-and-master
+  before_script:
+    - *rpm-before-script
+
+build-opensuse-leap-15.5:
+  extends:
+    - .build-opensuse-leap-155
     - .on-push-and-master
   before_script:
     - *rpm-before-script
