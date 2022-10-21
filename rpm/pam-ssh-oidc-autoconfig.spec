@@ -40,9 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 install -D -d -m 755 $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}
 install -m 644 documentation/README-autoconfig.md $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/README.md
-%if 0%{?suse_version} > 0 && !0%{?usrmerged}
-install -D -d -m 755 `dirname $RPM_BUILD_ROOT%{PAM_SSHD}`
-install -m 644 config/pam.d-sshd-suse $RPM_BUILD_ROOT%{PAM_SSHD}
+#%if 0%{?suse_version} > 0 && !0%{?usrmerged}
+#install -D -d -m 755 `dirname $RPM_BUILD_ROOT%{PAM_SSHD}`
+#install -m 644 config/pam.d-sshd-suse $RPM_BUILD_ROOT%{PAM_SSHD}
 %else
 %endif
 
