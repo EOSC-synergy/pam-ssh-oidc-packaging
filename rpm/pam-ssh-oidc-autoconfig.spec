@@ -5,16 +5,11 @@ Version: %{ver}
 Release: %{rel}
 
 Summary: PAM Plugin allowing consumption of OIDC AccessTokens - Autoconfig
-Group: Misc
+Group: System/Libraries
 License: MIT
 URL: https://github.com/EOSC-synergy/ssh-oidc
 Source0: pam-ssh-oidc-autoconfig.tar.gz
 Requires: pam-ssh-oidc >= 0.1.2-6
-
-# OpenSUSE likes to have a Group
-%if 0%{?suse_version} > 0
-Group: System/Libraries
-%endif
 
 BuildRoot:	%{_tmppath}/%{name}
 
@@ -45,9 +40,6 @@ install -m 644 documentation/README-autoconfig.md $RPM_BUILD_ROOT/usr/share/doc/
 %defattr(-,root,root,-)
 %docdir /usr/share/doc/
 /usr/share/doc/%{name}-%{version}/README.md
-%if 0%{?suse_version} > 0 && !0%{?usrmerged}
-%config(noreplace) %{_sysconfdir}/pam.d/sshd
-%endif
 
 %changelog
 * Fri Apr 23 2021 Marcus Hardt <hardt@kit.edu> 0.1.0-1
