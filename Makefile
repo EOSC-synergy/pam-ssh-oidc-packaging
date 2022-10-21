@@ -339,6 +339,7 @@ rpm: srctar
 	ls -la rpm
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}.spec
 	ls -la rpm
+	rm -rf ${PWD}/rpm/rpmbuild
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}-autoconfig.spec
 	ls -la rpm
 
