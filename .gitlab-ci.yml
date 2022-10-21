@@ -66,8 +66,6 @@ build-ubuntu-kinetic:
   before_script:
     - *deb-before-script
 
-
-
 build-centos-7:
   extends:
     - .build-centos-7
