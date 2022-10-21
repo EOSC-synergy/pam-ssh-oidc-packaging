@@ -336,8 +336,11 @@ rpms: srpm rpm
 
 .PHONY: rpm
 rpm: srctar
+	ls -la rpm
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}.spec
+	ls -la rpm
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}-autoconfig.spec
+	ls -la rpm
 
 .PHONY: srpm
 srpm: srctar
