@@ -66,16 +66,6 @@ build-ubuntu-kinetic:
   before_script:
     - *deb-before-script
 
-build-ubuntu-hirsute:
-  extends:
-    - .build-ubuntu-hirsute
-    - .never
-
-build-ubuntu-impish:
-  extends:
-    - .build-ubuntu-hirsute
-    - .never
-
 
 
 build-centos-7:
@@ -127,7 +117,7 @@ build-rockylinux-8.5:
 build-opensuse-leap-15.3:
   extends:
     - .build-opensuse-leap-153
-    - .never
+    - .on-push-and-master
   before_script:
     - *rpm-before-script
 
