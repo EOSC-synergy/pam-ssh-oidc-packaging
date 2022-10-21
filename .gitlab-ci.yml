@@ -14,10 +14,12 @@ variables:
 
 .deb-before-script: &deb-before-script
   - make get-sources
+  - ls -la
 
 .rpm-before-script: &rpm-before-script
   - make get-sources
   - make patch-for-rpm
+  - ls -la
 
 
 build-debian-buster:
