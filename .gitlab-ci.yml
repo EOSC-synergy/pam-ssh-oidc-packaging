@@ -82,7 +82,6 @@ build-centos-7:
     - .build-centos-7
     - .on-push-and-master
   before_script:
-    - ls -l results
     - *rpm-before-script
 
 build-centos-8:
