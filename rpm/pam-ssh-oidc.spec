@@ -15,13 +15,6 @@ BuildRequires: pam-devel
 BuildRequires: curl-devel
 BuildRequires: libcurl-devel
 
-# audit libs devel name is platform dependent
-#%if 0%{?fedora} || 0%{?rhel}
-#BuildRequires: audit-libs-devel
-#%else
-#BuildRequires: audit-devel
-#%endif
-
 BuildRoot:	%{_tmppath}/%{name}
 
 # define PAM_LIB_DIR, which is platform dependent
