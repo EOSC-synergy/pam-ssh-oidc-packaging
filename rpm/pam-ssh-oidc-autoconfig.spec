@@ -70,4 +70,3 @@ cat ${PAM_SSHD} | grep -v ^# | grep -q  "pam_oidc_token.so" || {
     echo "auth   sufficient pam_oidc_token.so config=%{_sysconfdir}/pam.d/pam-ssh-oidc-config.ini" >> ${PAM_SSHD}
     cat ${PAM_SSHD}.rpmtemp | grep -v "${HEADLINE}" >> ${PAM_SSHD}
 }
-%endif
