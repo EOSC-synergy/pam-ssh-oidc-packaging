@@ -59,11 +59,15 @@ cat ${PAM_SSHD} | grep -v ^# | grep -q  "pam_oidc_token.so" || {
     echo "#  A backup is in ${PAM_SSHD}.rpmsave"
     echo "######################################################################"
     HEADLINE=`head -n 1 ${PAM_SSHD}`
+    echo "pam_sshd: ${PAM_SSHD}"
+    ls -la ${PAM_SSHD}
+    ls -la /etc/pam.d
     test -e  ${PAM_SSHD}.rpmsave || {
         mv ${PAM_SSHD} ${PAM_SSHD}.rpmsave
     }
     test -e  ${PAM_SSHD}.rpmtemp &&  rm -f ${PAM_SSHD}.rpmtemp
     mv ${PAM_SSHD} ${PAM_SSHD}.rpmtemp
+    ls -la /etc/pam.d
     echo ${HEADLINE} > ${PAM_SSHD}
     echo "" >> ${PAM_SSHD}
     echo "# use pam-ssh-oidc" >> ${PAM_SSHD}
