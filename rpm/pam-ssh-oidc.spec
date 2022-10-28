@@ -5,15 +5,10 @@ Version: %{ver}
 Release: %{rel}
 
 Summary: PAM Plugin allowing consumption of OIDC AccessTokens
-Group: Misc
+Group: System/Libraries
 License: MIT
 URL: https://github.com/EOSC-synergy/ssh-oidc
 Source0: pam-ssh-oidc.tar.gz
-
-# OpenSUSE likes to have a Group
-%if 0%{?suse_version} > 0
-Group: System/Libraries
-%endif
 
 BuildRequires: gcc
 BuildRequires: pam-devel
