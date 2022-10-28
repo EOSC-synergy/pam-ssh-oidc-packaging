@@ -50,9 +50,6 @@ install -m 644 documentation/README-autoconfig.md $RPM_BUILD_ROOT/usr/share/doc/
 PAM_SSHD=%{PAM_SSHD}
 PAM_LIB_DIR=%{PAM_LIB_DIR}
 # Test %{_sysconfdir}/pam.d/sshd for adequate config:
-%if 0%{?suse_version} > 0 && !0%{?usrmerged}
-#echo "Created: ${PAM_SSHD}"
-%else
 cat ${PAM_SSHD} | grep -v ^# | grep -q  "pam_oidc_token.so" && {
     echo "### pam-ssh-oidc is already configured. Nothing to do ###"
 }
@@ -65,10 +62,12 @@ cat ${PAM_SSHD} | grep -v ^# | grep -q  "pam_oidc_token.so" || {
     test -e  ${PAM_SSHD}.rpmsave || {
         mv ${PAM_SSHD} ${PAM_SSHD}.rpmsave
     }
+    test -e  ${PAM_SSHD}.rpmtemp &&  rm -f ${PAM_SSHD}.rpmtemp
+    mv ${PAM_SSHD} ${PAM_SSHD}.rpmtemp
     echo ${HEADLINE} > ${PAM_SSHD}
     echo "" >> ${PAM_SSHD}
     echo "# use pam-ssh-oidc" >> ${PAM_SSHD}
     echo "auth   sufficient pam_oidc_token.so config=%{_sysconfdir}/pam.d/pam-ssh-oidc-config.ini" >> ${PAM_SSHD}
-    cat ${PAM_SSHD}.rpmsave | grep -v "${HEADLINE}" >> ${PAM_SSHD}
+    cat ${PAM_SSHD}.rpmtemp | grep -v "${HEADLINE}" >> ${PAM_SSHD}
 }
 %endif
