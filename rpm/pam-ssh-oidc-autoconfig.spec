@@ -65,12 +65,35 @@ cat ${PAM_SSHD} | grep -v ^# | grep -q  "pam_oidc_token.so" || {
     test -e  ${PAM_SSHD}.rpmsave || {
         cp ${PAM_SSHD} ${PAM_SSHD}.rpmsave
     }
-    test -e  ${PAM_SSHD}.rpmtemp &&  rm -f ${PAM_SSHD}.rpmtemp
-    mv ${PAM_SSHD} ${PAM_SSHD}.rpmtemp
-    ls -la /etc/pam.d
-    echo ${HEADLINE} > ${PAM_SSHD}
-    echo "" >> ${PAM_SSHD}
-    echo "# use pam-ssh-oidc" >> ${PAM_SSHD}
-    echo "auth   sufficient pam_oidc_token.so config=%{_sysconfdir}/pam.d/pam-ssh-oidc-config.ini" >> ${PAM_SSHD}
-    cat ${PAM_SSHD}.rpmtemp | grep -v "${HEADLINE}" >> ${PAM_SSHD}
+    test -e ${PAM_SSHD}.rpmtemp &&  rm -f ${PAM_SSHD}.rpmtemp
+
+    test -e ${PAM_SSHD} && {
+        mv ${PAM_SSHD} ${PAM_SSHD}.rpmtemp
+        ls -la /etc/pam.d
+        echo ${HEADLINE} > ${PAM_SSHD}
+        echo "" >> ${PAM_SSHD}
+        echo "# use pam-ssh-oidc" >> ${PAM_SSHD}
+        echo "auth   sufficient pam_oidc_token.so config=%{_sysconfdir}/pam.d/pam-ssh-oidc-config.ini" >> ${PAM_SSHD}
+        cat ${PAM_SSHD}.rpmtemp | grep -v "${HEADLINE}" >> ${PAM_SSHD}
+        rm ${PAM_SSHD}.rpmtemp
+    }
+    test -e ${PAM_SSHD} || {
+        echo "##########################################################"
+        echo "#### No files in /etc/pam.d ##############################"
+        echo "####    This may be opensuse tumbleweed or some distro that "
+        echo "####    uses pam-config."
+        echo "####    WARNING: I'm placing my own /etc/pam.d/sshd config"
+        echo "##########################################################"
+        PAM="/etc/pam.d/sshd"
+        echo "auth   sufficient pam_oidc_token.so config=/etc/pam.d/pam-ssh-oidc-config.ini" > $PAM
+        echo "auth        requisite   pam_nologin.so" >> $PAM
+        echo "auth        include     common-auth" >> $PAM
+        echo "account     requisite   pam_nologin.so" >> $PAM
+        echo "account     include     common-account" >> $PAM
+        echo "password    include     common-password" >> $PAM
+        echo "session     required    pam_loginuid.so" >> $PAM
+        echo "session     include     common-session" >> $PAM
+        echo "session     optional    pam_lastlog.so   silent noupdate showfailed" >> $PAM
+        echo "session     optional    pam_keyinit.so   force revoke" >> $PAM
+    }
 }
