@@ -46,12 +46,20 @@ build-debian-bookworm:
 
 
 
+build-ubuntu-bionic:
+  extends:
+    - .build-ubuntu-bionic
+    - .on-push-and-master
+  before_script:
+    - *deb-before-script
+
 build-ubuntu-focal:
   extends:
     - .build-ubuntu-focal
     - .on-push-and-master
   before_script:
     - *deb-before-script
+
 build-ubuntu-jammy:
   extends:
     - .build-ubuntu-jammy
