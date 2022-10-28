@@ -63,7 +63,7 @@ cat ${PAM_SSHD} | grep -v ^# | grep -q  "pam_oidc_token.so" || {
     ls -la ${PAM_SSHD}
     ls -la /etc/pam.d
     test -e  ${PAM_SSHD}.rpmsave || {
-        mv ${PAM_SSHD} ${PAM_SSHD}.rpmsave
+        cp ${PAM_SSHD} ${PAM_SSHD}.rpmsave
     }
     test -e  ${PAM_SSHD}.rpmtemp &&  rm -f ${PAM_SSHD}.rpmtemp
     mv ${PAM_SSHD} ${PAM_SSHD}.rpmtemp
