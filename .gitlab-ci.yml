@@ -151,7 +151,7 @@ build-opensuse-tumbleweed:
     - *rpm-before-script
 
 integration-tests:
-  stage: integration
+  stage: build
   variables:
     PLUGIN_REF: main
     AGENT_REF: $CI_COMMIT_REF_NAME
