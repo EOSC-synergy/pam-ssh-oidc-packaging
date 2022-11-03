@@ -145,6 +145,6 @@ build-opensuse-leap-15.5:
 build-opensuse-tumbleweed:
   extends:
     - .build-opensuse-tumbleweed
-    - .on-push-and-master
+    - .never
   before_script:
     - *rpm-before-script
