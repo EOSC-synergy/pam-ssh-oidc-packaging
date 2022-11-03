@@ -7,6 +7,7 @@ variables:
   # These variables are set globally here:
   DOCKER_IMAGE_NAMESPACE: 'marcvs/build'
   DOCKER_IMAGE_NAME: 'pam-ssh-oidc-packaging'
+  #TARGET_REPO: 'devel'
   # The following varialbes can be overwritten only in specific targets
   # REPO_BASE
   # REPO_USER
