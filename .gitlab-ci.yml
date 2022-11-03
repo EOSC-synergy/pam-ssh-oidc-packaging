@@ -148,3 +148,22 @@ build-opensuse-tumbleweed:
     - .never
   before_script:
     - *rpm-before-script
+
+integration-tests:
+  stage: integration
+  rules:
+    #- if: $CI_PIPELINE_SOURCE != "push" && $CI_PIPELINE_SOURCE != "web"
+    #  when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      variables:
+        TRIGGER_BRANCH: main
+    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
+      variables:
+        TRIGGER_BRANCH: devel
+  trigger:
+    project: m-team/test/test-integration-ssh-oidc
+    branch: $TRIGGER_BRANCH
+    strategy: depend
+    forward:
+      pipeline_variables: true
