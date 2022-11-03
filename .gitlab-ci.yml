@@ -164,10 +164,10 @@ integration-tests:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
       variables:
-        TRIGGER_BRANCH: main
+        TRIGGER_BRANCH: revitalise
     - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
       variables:
-        TRIGGER_BRANCH: main
+        TRIGGER_BRANCH: revitalise
   inherit:
     variables: false
   trigger:
