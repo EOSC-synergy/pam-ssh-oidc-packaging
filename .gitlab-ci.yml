@@ -152,9 +152,6 @@ build-opensuse-tumbleweed:
 
 integration-tests:
   stage: integration
-  needs:
-    - integration-debian-buster
-    - integration-debian-bullseye
   variables:
     PLUGIN_REF: main
     AGENT_REF: $CI_COMMIT_REF_NAME
