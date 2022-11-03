@@ -150,7 +150,7 @@ build-opensuse-tumbleweed:
   before_script:
     - *rpm-before-script
 
-integration-tests:
+integration:
   stage: integration
   rules:
     #- if: $CI_PIPELINE_SOURCE != "push" && $CI_PIPELINE_SOURCE != "web"
