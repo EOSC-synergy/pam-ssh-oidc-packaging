@@ -125,14 +125,16 @@ build-rockylinux-8.5:
 build-opensuse-leap-15.3:
   extends:
     - .build-opensuse-leap-153
-    - .on-push-and-master
+    - .on-master
+    - .trigger-integration-test-ssh-oidc
   before_script:
     - *rpm-before-script
 
 build-opensuse-leap-15.4:
   extends:
     - .build-opensuse-leap-154
-    - .on-push-and-master
+    - .on-master
+    - .trigger-integration-test-ssh-oidc
   before_script:
     - *rpm-before-script
 
@@ -140,6 +142,7 @@ build-opensuse-leap-15.5:
   extends:
     - .build-opensuse-leap-155
     - .on-push-and-master
+    - .trigger-integration-test-ssh-oidc
   before_script:
     - *rpm-before-script
 
@@ -150,6 +153,12 @@ build-opensuse-tumbleweed:
   allow_failure: true
   before_script:
     - *rpm-before-script
+
+.trigger-integration-test-ssh-oidc: &trigger-integration-test-ssh-oidc
+  trigger:
+    project: m-team/integration/test-ssh-oidc
+    branch: main
+    strategy: depend
 
 integration-tests:
   stage: integration
