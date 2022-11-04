@@ -120,6 +120,12 @@ build-rockylinux-8.5:
 #  before_script:
 #    - *rpm-before-script
 
+.trigger-integration-test-ssh-oidc: &trigger-integration-test-ssh-oidc
+  trigger:
+    project: m-team/integration/test-ssh-oidc
+    branch: main
+    strategy: depend
+
 
 
 build-opensuse-leap-15.3:
@@ -153,12 +159,6 @@ build-opensuse-tumbleweed:
   allow_failure: true
   before_script:
     - *rpm-before-script
-
-.trigger-integration-test-ssh-oidc: &trigger-integration-test-ssh-oidc
-  trigger:
-    project: m-team/integration/test-ssh-oidc
-    branch: main
-    strategy: depend
 
 integration-tests:
   stage: integration
