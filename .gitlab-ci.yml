@@ -50,6 +50,7 @@ build-debian-bookworm:
 build-ubuntu-bionic:
   extends:
     - .build-ubuntu-bionic
+    - .on-master
     - .on-push-and-master
   before_script:
     - *deb-before-script
@@ -137,7 +138,8 @@ build-opensuse-leap-15.4:
 build-opensuse-leap-15.5:
   extends:
     - .build-opensuse-leap-155
-    - .on-push-and-master
+    #- .on-push-and-master
+    - .on-master
   before_script:
     - *rpm-before-script
 
@@ -164,8 +166,6 @@ integration-tests:
     #- if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
     #  variables:
     #    TRIGGER_BRANCH: main
-  inherit:
-    variables: false
   variables:
     CALLER_REF: $CI_COMMIT_REF_NAME
   trigger:
