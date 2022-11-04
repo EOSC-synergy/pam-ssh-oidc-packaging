@@ -16,14 +16,28 @@ variables:
 .deb-before-script: &deb-before-script
   - |
     make get-sources
+    echo "### before-script ##############################################"
+    echo "CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}"
+    echo "CI_COMMIT_BRANCH:   ${CI_COMMIT_BRANCH}"
     echo "CI_PIPELINE_SOURCE: ${CI_PIPELINE_SOURCE}"
+    echo "CI_UPSTREAM_PIPELINE_SOURCE:  ${CI_UPSTREAM_PIPELINE_SOURCE}"
+    echo "CI_UPSTREAM_COMMIT_BRANCH:    $CI_UPSTREAM_COMMT_BRANCH"
+    echo "CI_UPSTREAM_DEFAULT_BRANCH:   $CI_UPSTREAM_DEFAULT_BRANCH"
+    echo "### /before-script ##############################################"
 
 .rpm-before-script: &rpm-before-script
   - |
     make get-sources
     make patch-for-rpm
     ls -la rpm
+    echo "### before-script ##############################################"
+    echo "CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}"
+    echo "CI_COMMIT_BRANCH:   ${CI_COMMIT_BRANCH}"
     echo "CI_PIPELINE_SOURCE: ${CI_PIPELINE_SOURCE}"
+    echo "CI_UPSTREAM_PIPELINE_SOURCE:  ${CI_UPSTREAM_PIPELINE_SOURCE}"
+    echo "CI_UPSTREAM_COMMIT_BRANCH:    $CI_UPSTREAM_COMMT_BRANCH"
+    echo "CI_UPSTREAM_DEFAULT_BRANCH:   $CI_UPSTREAM_DEFAULT_BRANCH"
+    echo "### /before-script ##############################################"
 
 
 build-debian-buster:
