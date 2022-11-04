@@ -121,7 +121,7 @@ build-rockylinux-8.5:
 #    - *rpm-before-script
 
 .trigger-integration-test-ssh-oidc: &trigger-integration-test-ssh-oidc
-  trigger:
+  variables:
     project: m-team/integration/test-ssh-oidc
     branch: main
     strategy: depend
