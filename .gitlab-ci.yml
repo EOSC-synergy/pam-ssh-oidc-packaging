@@ -167,7 +167,7 @@ integration-tests:
     # even though inherit:variables:false
     HORRIBLE_MESS: marcus-hates-this
     CI_UPSTREAM_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
-    CI_UPSTREAM_COMMIT_BRANCH: $CI_COMMT_BRANCH
+    CI_UPSTREAM_COMMIT_BRANCH: $CI_COMMIT_BRANCH
     CI_UPSTREAM_DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
   trigger:
     project: m-team/integration/test-ssh-oidc
