@@ -157,21 +157,16 @@ integration-tests:
     PLUGIN_REF: main
     AGENT_REF: $CI_COMMIT_REF_NAME
   rules:
-    # When this is in, error changes:
-    # from: "Reference not found"
-    # to:   "No stages / jobs for this pipeline"
-    #- if: $CI_PIPELINE_SOURCE != "push" && $CI_PIPELINE_SOURCE != "web"
-    #  when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-      variables:
-        TRIGGER_BRANCH: main
-    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
-      variables:
-        TRIGGER_BRANCH: main
+    #  variables:
+    #    TRIGGER_BRANCH: main
+    #- if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
+    #  variables:
+    #    TRIGGER_BRANCH: main
   inherit:
     variables: false
   trigger:
     project: m-team/integration/test-ssh-oidc
-    branch: $TRIGGER_BRANCH
+    branch: main
     strategy: depend
