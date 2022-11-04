@@ -15,7 +15,6 @@ variables:
 
 .deb-before-script: &deb-before-script
   - make get-sources
-  - echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
 
 .rpm-before-script: &rpm-before-script
   - make get-sources
