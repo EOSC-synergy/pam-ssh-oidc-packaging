@@ -144,7 +144,6 @@ build-opensuse-leap-15.5:
   before_script:
     - *rpm-before-script
 
-
 build-opensuse-tumbleweed:
   extends:
     - .build-opensuse-tumbleweed
