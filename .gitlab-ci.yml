@@ -157,7 +157,7 @@ integration-tests:
   extends:
     - .on-push-and-master
   inherit:
-    variables: false
+    variables: true
   #variables:
   #  PLUGIN_REF: main
   #  CALLER_REF: $CI_COMMIT_REF_NAME
