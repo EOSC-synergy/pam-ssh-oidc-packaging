@@ -111,7 +111,6 @@ build-rockylinux-8.5:
     - *rpm-before-script
 
 
-
 # Fedora container build fails with some GPG issues
 #build-fedora-36:
 #  extends:
