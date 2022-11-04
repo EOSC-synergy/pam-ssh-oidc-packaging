@@ -166,7 +166,7 @@ integration-tests:
     # these variables are actually transported to the other side,
     # even though inherit:variables:false
     HORRIBLE_MESS: marcus-hates-this
-    CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    CI_UPSTREAM_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
   trigger:
     project: m-team/integration/test-ssh-oidc
     branch: main
