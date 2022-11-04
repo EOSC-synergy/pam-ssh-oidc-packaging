@@ -148,12 +148,15 @@ build-opensuse-leap-15.5:
   extends:
     - .build-opensuse-leap-155
     - .on-push-and-master
+  before_script:
+    - *rpm-before-script
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
   trigger:
     project: m-team/integration/test-ssh-oidc
     branch: main
     strategy: depend
-  before_script:
-    - *rpm-before-script
 
 build-opensuse-tumbleweed:
   extends:
