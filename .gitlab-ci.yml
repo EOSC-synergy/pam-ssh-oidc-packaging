@@ -157,9 +157,9 @@ integration-tests:
   extends:
     - .on-push-and-master
   inherit:
-    variables: true
-  #variables:
-  #  PLUGIN_REF: main
+    variables: false
+  variables:
+    HORRIBLE_MESS: marcus-hates-this
   #  CALLER_REF: $CI_COMMIT_REF_NAME
   trigger:
     project: m-team/integration/test-ssh-oidc
