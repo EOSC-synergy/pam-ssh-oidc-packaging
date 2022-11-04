@@ -308,6 +308,7 @@ patch-for-rpm:
 		done; \
     fi
 	@touch .patched
+	find rpm
 .PHONY: unpatch-for-rpm
 unpatch-for-rpm:
 	@if [ -e ".patched" ]; then \
