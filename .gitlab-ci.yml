@@ -174,3 +174,4 @@ integration-tests:
   trigger:
     project: m-team/integration/test-ssh-oidc
     branch: $TRIGGER_BRANCH
+    strategy: depend
