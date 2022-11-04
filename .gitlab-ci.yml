@@ -19,9 +19,11 @@ variables:
     echo "CI_PIPELINE_SOURCE: ${CI_PIPELINE_SOURCE}"
 
 .rpm-before-script: &rpm-before-script
-  - make get-sources
-  - make patch-for-rpm
-  - ls -la rpm
+  - |
+    make get-sources
+    make patch-for-rpm
+    ls -la rpm
+    echo "CI_PIPELINE_SOURCE: ${CI_PIPELINE_SOURCE}"
 
 
 build-debian-buster:
