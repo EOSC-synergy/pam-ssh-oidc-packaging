@@ -25,7 +25,7 @@ variables:
 build-debian-buster:
   extends:
     - .build-debian-buster
-    - .on-push-and-master
+    - .on-master
   before_script:
     - *deb-before-script
   # variables:
@@ -57,14 +57,14 @@ build-ubuntu-bionic:
 build-ubuntu-focal:
   extends:
     - .build-ubuntu-focal
-    - .on-push-and-master
+    - .on-master
   before_script:
     - *deb-before-script
 
 build-ubuntu-jammy:
   extends:
     - .build-ubuntu-jammy
-    - .on-push-and-master
+    - .on-master
   before_script:
     - *deb-before-script
 
@@ -86,14 +86,14 @@ build-centos-7:
 build-centos-8:
   extends:
     - .build-centos-8
-    - .on-push-and-master
+    - .on-master
   before_script:
     - *rpm-before-script
 
 build-centos-stream:
   extends:
     - .build-centos-stream
-    - .on-push-and-master
+    - .on-master
   before_script:
     - *rpm-before-script
 
@@ -106,7 +106,7 @@ build-rockylinux-8:
 build-rockylinux-8.5:
   extends:
     - .build-rockylinux-85
-    - .on-push-and-master
+    - .on-master
   before_script:
     - *rpm-before-script
 
@@ -155,9 +155,11 @@ integration-tests:
   variables:
     PLUGIN_REF: main
     AGENT_REF: $CI_COMMIT_REF_NAME
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  extends:
+    - .on-push-and-master
+  #rules:
+  #  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  #  - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
     #  variables:
     #    TRIGGER_BRANCH: main
     #- if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
