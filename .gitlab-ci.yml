@@ -120,13 +120,6 @@ build-rockylinux-8.5:
 #  before_script:
 #    - *rpm-before-script
 
-.trigger-integration-test-ssh-oidc: &trigger-integration-test-ssh-oidc
-  variables:
-    project: m-team/integration/test-ssh-oidc
-    branch: main
-    strategy: depend
-
-
 
 build-opensuse-leap-15.3:
   extends:
@@ -150,13 +143,6 @@ build-opensuse-leap-15.5:
     - .on-push-and-master
   before_script:
     - *rpm-before-script
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-  trigger:
-    project: m-team/integration/test-ssh-oidc
-    branch: main
-    strategy: depend
 
 build-opensuse-tumbleweed:
   extends:
