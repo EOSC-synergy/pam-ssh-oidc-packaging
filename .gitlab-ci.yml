@@ -186,6 +186,8 @@ publish-debian-bookworm:
   ## FIXME: Use one standard image here!
   #image: "${DOCKER_IMAGE_NAMESPACE}_${DOCKER_IMAGE_NAME}_${DISTRO}-${RELEASE}:${DOCKER_IMAGE_VERSION}"
   image: "marcvs/test_ssh-oidc_debian-bookworm:1"
+  needs:
+    job: build-debian-bookworm
   script:
     - |
       find results
