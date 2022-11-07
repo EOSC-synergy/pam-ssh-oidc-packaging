@@ -183,6 +183,8 @@ integration-tests:
 
 publish-debian-bookworm:
   stage: publish
+  ## FIXME: Use one standard image here!
+  image: "${DOCKER_IMAGE_NAMESPACE}_${DOCKER_IMAGE_NAME}_${DISTRO}-${RELEASE}:${DOCKER_IMAGE_VERSION}"
   script:
     - |
       find results
