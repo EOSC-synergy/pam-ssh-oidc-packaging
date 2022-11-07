@@ -191,6 +191,7 @@ publish-all:
 
   script:
     - |
+      *ssh-key-script
       find results
       (cd results
           for DISTRO in *; do
@@ -200,13 +201,18 @@ publish-all:
                           echo "DISTRO:  ${DISTRO}"
                           echo "RELEASE: ${RELEASE}"
                           echo "user@host: ${REPO_USER}@${REPO_HOST}"
+                          echo "PUBLISH_RESULTS_REPO: ${PUBLISH_RESULTS_REPO}"
+                          [ -z "$PUBLISH_RESULTS_REPO" ] && {
+                              echo "Error: PUBLISH_RESULTS_REPO is empty"
+                              exit 2
+                          }
                           # Ensure package version is not yet in pre-release
                           pwd
                           ls -la
                           for FILE in *rpm *deb; do
                               echo "ssh ${REPO_USER}@${REPO_HOST} ~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t {$PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} "
                               ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t {$PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} " || {
-                                  echo "FILE DOES ALREADY EXIT"
+                                  echo "Error: File does already exist OR there was an ssh error"
                                   exit 1
                               }
                           done
@@ -219,7 +225,6 @@ publish-all:
       echo "bbbbbbbbbbb"
       # Copy files to new repo
 
-      ${PUBLISH_RESULTS_REPO}
 
       # Sign prerel repo
       ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/sign-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE}"
