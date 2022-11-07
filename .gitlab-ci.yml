@@ -182,7 +182,7 @@ integration-tests:
     strategy: depend
 
 publish-debian-bookworm:
-  stage:publish
+  stage: publish
   script:
     - |
       find results
