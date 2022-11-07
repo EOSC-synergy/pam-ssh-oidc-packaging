@@ -2,94 +2,120 @@
 include:
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/generic-ci.yml'
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs.yml'
+  - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/distro-build-conditions.yml'
+
 
 variables:
-  STAGING_BRANCH_NAME: 'devel'
+  # These variables are set globally here:
   DOCKER_IMAGE_NAMESPACE: 'marcvs/build'
   DOCKER_IMAGE_NAME: 'pam-ssh-oidc-packaging'
+  PACKAGE_NAMES: 'pam-ssh-oidc pam-ssh-oidc-autoconfig'
+  #TARGET_REPO: 'devel'
+  # The following varialbes can be overwritten only in specific targets
+  # REPO_BASE
+  # REPO_USER
+  # REPO_HOST
 
 .deb-before-script: &deb-before-script
-  - make get-sources
+  - |
+    make get-sources
+    echo "### before-script ##############################################"
+    echo "CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}"
+    echo "CI_COMMIT_BRANCH:   ${CI_COMMIT_BRANCH}"
+    echo "CI_DEFAULT_BRANCH:  ${CI_DEFAULT_BRANCH}"
+    echo "CI_PIPELINE_SOURCE: ${CI_PIPELINE_SOURCE}"
+    echo "CI_UPSTREAM_PIPELINE_SOURCE:  ${CI_UPSTREAM_PIPELINE_SOURCE}"
+    echo "CI_UPSTREAM_COMMIT_BRANCH:    $CI_UPSTREAM_COMMT_BRANCH"
+    echo "CI_UPSTREAM_DEFAULT_BRANCH:   $CI_UPSTREAM_DEFAULT_BRANCH"
+    echo "### /before-script ##############################################"
 
 .rpm-before-script: &rpm-before-script
-  - make get-sources
-  - make patch-for-rpm
+  - |
+    make get-sources
+    make patch-for-rpm
+    ls -la rpm
+    echo "### before-script ##############################################"
+    echo "CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}"
+    echo "CI_COMMIT_BRANCH:   ${CI_COMMIT_BRANCH}"
+    echo "CI_DEFAULT_BRANCH:  ${CI_DEFAULT_BRANCH}"
+    echo "CI_PIPELINE_SOURCE: ${CI_PIPELINE_SOURCE}"
+    echo "CI_UPSTREAM_PIPELINE_SOURCE:  ${CI_UPSTREAM_PIPELINE_SOURCE}"
+    echo "CI_UPSTREAM_COMMIT_BRANCH:    $CI_UPSTREAM_COMMT_BRANCH"
+    echo "CI_UPSTREAM_DEFAULT_BRANCH:   $CI_UPSTREAM_DEFAULT_BRANCH"
+    echo "### /before-script ##############################################"
 
 
 build-debian-buster:
   extends:
     - .build-debian-buster
-    - .on-push-and-master
+    - .build-conditions-debian-buster
   before_script:
     - *deb-before-script
+  # variables:
+  #   REPO_BASE: '/var/www/prerel'
 
 build-debian-bullseye:
   extends:
     - .build-debian-bullseye
-    - .on-push-and-master
+    - .build-conditions-debian-bullseye
   before_script:
     - *deb-before-script
 
 build-debian-bookworm:
   extends:
     - .build-debian-bookworm
-    - .on-push-and-master
+    - .build-conditions-debian-bookworm
   before_script:
     - *deb-before-script
 
 
+build-ubuntu-bionic:
+  extends:
+    - .build-ubuntu-bionic
+    - .build-conditions-ubuntu-bionic
+  before_script:
+    - *deb-before-script
 
 build-ubuntu-focal:
   extends:
     - .build-ubuntu-focal
-    - .on-push-and-master
+    - .build-conditions-ubuntu-focal
   before_script:
     - *deb-before-script
 
 build-ubuntu-jammy:
   extends:
     - .build-ubuntu-jammy
-    - .on-push-and-master
+    - .build-conditions-ubuntu-jammy
   before_script:
     - *deb-before-script
 
 build-ubuntu-kinetic:
   extends:
     - .build-ubuntu-kinetic
-    - .on-push-and-master
+    - .build-conditions-ubuntu-kinetic
   before_script:
     - *deb-before-script
-
-build-ubuntu-hirsute:
-  extends:
-    - .build-ubuntu-hirsute
-    - .never
-
-build-ubuntu-impish:
-  extends:
-    - .build-ubuntu-hirsute
-    - .never
-
-
 
 build-centos-7:
   extends:
     - .build-centos-7
-    - .on-push-and-master
+    - .build-conditions-centos-7
   before_script:
     - *rpm-before-script
+
 
 build-centos-8:
   extends:
     - .build-centos-8
-    - .on-push-and-master
+    - .build-conditions-centos-8
   before_script:
     - *rpm-before-script
 
 build-centos-stream:
   extends:
     - .build-centos-stream
-    - .on-push-and-master
+    - .build-conditions-centos-stream
   before_script:
     - *rpm-before-script
 
@@ -99,13 +125,12 @@ build-rockylinux-8:
     - .build-rockylinux-85
     - .never
 
-build-rockylinux-8.5:
+build-rockylinux-85:
   extends:
     - .build-rockylinux-85
-    - .on-push-and-master
+    - .build-conditions-rockylinux-85
   before_script:
     - *rpm-before-script
-
 
 
 # Fedora container build fails with some GPG issues
@@ -116,25 +141,70 @@ build-rockylinux-8.5:
 #  before_script:
 #    - *rpm-before-script
 
-
-
-build-opensuse-leap-15.3:
+build-opensuse-15.4:
   extends:
-    - .build-opensuse-leap-153
-    - .never
+    - .build-opensuse-154
+    - .build-conditions-opensuse-154
   before_script:
     - *rpm-before-script
 
-build-opensuse-leap-15.4:
+build-opensuse-15.5:
   extends:
-    - .build-opensuse-leap-154
-    - .on-push-and-master
+    - .build-opensuse-155
+    - .build-conditions-opensuse-155
   before_script:
     - *rpm-before-script
 
 build-opensuse-tumbleweed:
   extends:
     - .build-opensuse-tumbleweed
-    - .on-push-and-master
+    - .build-conditions-opensuse-tumbleweed
+  allow_failure: true
   before_script:
     - *rpm-before-script
+
+integration-tests:
+  stage: integration
+  extends:
+    - .on-push-and-master
+  inherit:
+    variables: false
+  variables:    
+    # these variables are actually transported to the other side,
+    # even though inherit:variables:false
+    HORRIBLE_MESS: marcus-hates-this
+    CI_UPSTREAM_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    CI_UPSTREAM_COMMIT_BRANCH: $CI_COMMIT_BRANCH
+    CI_UPSTREAM_DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
+  trigger:
+    project: m-team/integration/test-ssh-oidc
+    branch: main
+    strategy: depend
+
+publish-debian-bookworm:
+  stage:publish
+  script:
+    - |
+      find results
+      echo "aaaaaaaaaa"
+      # Ensure package version is not yet in pre-release
+      (
+          cd results
+          for FILE in *rpm *deb; do 
+              ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/is-file-in-repo.sh " -t {$PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} || {
+                  echo "FILE DOES ALREADY EXIT"
+                  exit 1
+              }
+          done
+      )
+
+      echo "bbbbbbbbbbb"
+      # Copy files to new repo
+
+      ${PUBLISH_RESULTS_REPO}
+
+      # Sign prerel repo
+      ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/sign-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE}"
+
+
+
