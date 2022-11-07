@@ -181,7 +181,7 @@ integration-tests:
     branch: main
     strategy: depend
 
-  publish-all:
+publish-all:
   stage: publish
   image: "marcvs/test_ssh-oidc_debian-bookworm:1"
 
