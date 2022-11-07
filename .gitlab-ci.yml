@@ -2,6 +2,7 @@
 include:
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/generic-ci.yml'
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs.yml'
+  - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/distro-build-conditions.yml'
 
 variables:
   # These variables are set globally here:
@@ -45,7 +46,7 @@ variables:
 build-debian-buster:
   extends:
     - .build-debian-buster
-    - .on-master
+    - .build-conditions-debian-buster
   before_script:
     - *deb-before-script
   # variables:
@@ -54,14 +55,14 @@ build-debian-buster:
 build-debian-bullseye:
   extends:
     - .build-debian-bullseye
-    - .on-push-and-master
+    - .build-conditions-debian-bullseye
   before_script:
     - *deb-before-script
 
 build-debian-bookworm:
   extends:
     - .build-debian-bookworm
-    - .on-push-and-master
+    - .build-conditions-debian-bookworm
   before_script:
     - *deb-before-script
 
@@ -70,7 +71,7 @@ build-debian-bookworm:
 build-ubuntu-bionic:
   extends:
     - .build-ubuntu-bionic
-    - .on-master
+    - .build-conditions-ubuntu-bionic
     - .on-push-and-master
   before_script:
     - *deb-before-script
@@ -78,29 +79,28 @@ build-ubuntu-bionic:
 build-ubuntu-focal:
   extends:
     - .build-ubuntu-focal
-    - .on-master
+    - .build-conditions-ubuntu-focal
   before_script:
     - *deb-before-script
 
 build-ubuntu-jammy:
   extends:
     - .build-ubuntu-jammy
-    - .on-master
+    - .build-conditions-ubuntu-jammy
   before_script:
     - *deb-before-script
 
 build-ubuntu-kinetic:
   extends:
     - .build-ubuntu-kinetic
-    - .on-push-and-master
+    - .build-conditions-ubuntu-kinetic
   before_script:
     - *deb-before-script
 
 build-centos-7:
   extends:
     - .build-centos-7
-    #- .on-push-and-master
-    - .on-master
+    - .build-conditions-centos-7
   before_script:
     - *rpm-before-script
 
@@ -108,14 +108,14 @@ build-centos-7:
 build-centos-8:
   extends:
     - .build-centos-8
-    - .on-master
+    - .build-conditions-centos-8
   before_script:
     - *rpm-before-script
 
 build-centos-stream:
   extends:
     - .build-centos-stream
-    - .on-master
+    - .build-conditions-centos-stream
   before_script:
     - *rpm-before-script
 
@@ -125,10 +125,10 @@ build-rockylinux-8:
     - .build-rockylinux-85
     - .never
 
-build-rockylinux-8.5:
+build-rockylinux-85:
   extends:
     - .build-rockylinux-85
-    - .on-master
+    - .build-conditions-rockylinux-85
   before_script:
     - *rpm-before-script
 
@@ -145,29 +145,28 @@ build-rockylinux-8.5:
 build-opensuse-leap-15.3:
   extends:
     - .build-opensuse-leap-153
-    - .on-master
+    - .build-conditions-opensuse-leap-153
   before_script:
     - *rpm-before-script
 
 build-opensuse-leap-15.4:
   extends:
     - .build-opensuse-leap-154
-    - .on-master
+    - .build-conditions-opensuse-leap-154
   before_script:
     - *rpm-before-script
 
 build-opensuse-leap-15.5:
   extends:
     - .build-opensuse-leap-155
-    #- .on-push-and-master
-    - .on-master
+    - .build-conditions-opensuse-leap-155
   before_script:
     - *rpm-before-script
 
 build-opensuse-tumbleweed:
   extends:
     - .build-opensuse-tumbleweed
-    - .on-master
+    - .build-conditions-opensuse-tumbleweed
   allow_failure: true
   before_script:
     - *rpm-before-script
