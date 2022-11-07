@@ -207,14 +207,15 @@ publish-all:
                   }
                   # Ensure package version is not yet in pre-release
                   for FILE in ${DISTRO}/${RELEASE}/*rpm ${DISTRO}/${RELEASE}/*deb; do
-                      echo "Handling file: $FILE"
                       [ -e ${FILE} ] || continue
+                      echo "Handling file: $FILE"
                       MD5SUM=`md5sum $FILE | cut -d ' ' -f 1`
                       echo "MD5SUM: $MD5SUM - $FILE"
                       ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f `basename ${FILE}` -m ${MD5SUM}" || {
                           echo "Error: File does already exist OR there was an ssh error"
                           exit 1
                       }
+                      echo "--------------------------------------------"
                   done
               done
           done
@@ -223,9 +224,10 @@ publish-all:
       # None of the files is already in the repo, or only with an existing
       # md5sum.
       # Therefore, we can now copy files to new repo, and sign it
+      echo "Uploading"
       (cd results
           for DISTRO in *; do
-              for RELEASE in ${DISTRO}/*; do
+              for R in ${DISTRO}/*; do
                   RELEASE=`basename $R`
                   for FILE in ${DISTRO}/${RELEASE}/*rpm ${DISTRO}/${RELEASE}/*deb; do
                       [ -e ${FILE} ] || continue
