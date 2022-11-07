@@ -233,7 +233,7 @@ publish-all:
                       [ -e ${FILE} ] || continue
                       # this is strange, but will make the file location
                       # be entirely be based on the remote ci-tools:
-                      cat ${FILE} | ssh ${FILE} ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/place-file-in-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f `basename ${FILE}` -m ${MD5SUM}" || {
+                      cat ${FILE} | ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/place-file-in-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f `basename ${FILE}` -m ${MD5SUM}" || {
                           echo "Error placing ${FILE} "
                           exit 1
                       }
