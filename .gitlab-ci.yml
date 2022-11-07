@@ -187,7 +187,8 @@ publish-debian-bookworm:
   #image: "${DOCKER_IMAGE_NAMESPACE}_${DOCKER_IMAGE_NAME}_${DISTRO}-${RELEASE}:${DOCKER_IMAGE_VERSION}"
   image: "marcvs/test_ssh-oidc_debian-bookworm:1"
   needs:
-    - job: build-debian-bookworm
+    - project: $CI_PROJECT_PATH
+      job: build-debian-bookworm
       artifacts: true
     - project: m-team/integration/test-ssh-oidc
       job: integration-debian-bookworm
