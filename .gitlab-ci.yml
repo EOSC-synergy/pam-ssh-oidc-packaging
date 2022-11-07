@@ -195,42 +195,53 @@ publish-all:
       find results
       (cd results
           for DISTRO in *; do
-              (cd $DISTRO
-                  for RELEASE in *; do
-                      (cd $RELEASE
-                          echo "DISTRO:  ${DISTRO}"
-                          echo "RELEASE: ${RELEASE}"
-                          echo "user@host: ${REPO_USER}@${REPO_HOST}"
-                          echo "PUBLISH_RESULTS_REPO: ${PUBLISH_RESULTS_REPO}"
-                          [ -z "$PUBLISH_RESULTS_REPO" ] && {
-                              echo "Error: PUBLISH_RESULTS_REPO is empty"
-                              exit 2
-                          }
-                          # Ensure package version is not yet in pre-release
-                          pwd
-                          ls -la
-                          for FILE in *rpm *deb; do
-                              [ -e ${FILE} ] || continue
-                              MD5SUM=`md5sum $FILE | cut -d ' ' -f 1`
-                              echo "MD5SUM: $MD5SUM - $FILE"
-                              echo "ssh ${REPO_USER}@${REPO_HOST} ~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} -m ${MD5SUM}"
-                              ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} -m ${MD5SUM}" || {
-                                  echo "Error: File does already exist OR there was an ssh error"
-                                  exit 1
-                              }
-                          done
-                      )
+              for RELEASE in *; do
+                  echo "DISTRO:  ${DISTRO}"
+                  echo "RELEASE: ${RELEASE}"
+                  echo "user@host: ${REPO_USER}@${REPO_HOST}"
+                  echo "PUBLISH_RESULTS_REPO: ${PUBLISH_RESULTS_REPO}"
+                  [ -z "$PUBLISH_RESULTS_REPO" ] && {
+                      echo "Error: PUBLISH_RESULTS_REPO is empty"
+                      exit 2
+                  }
+                  # Ensure package version is not yet in pre-release
+                  pwd
+                  ls -la
+                  for FILE in *rpm *deb; do
+                      [ -e ${FILE} ] || continue
+                      MD5SUM=`md5sum $FILE | cut -d ' ' -f 1`
+                      echo "MD5SUM: $MD5SUM - $FILE"
+                      ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f `basename ${FILE}` -m ${MD5SUM}" || {
+                          echo "Error: File does already exist OR there was an ssh error"
+                          exit 1
+                      }
                   done
-              )
+              done
           done
       )
 
-      echo "bbbbbbbbbbb"
-      # Copy files to new repo
+      # None of the files is already in the repo, or only with an existing
+      # md5sum.
+      # Therefore, we can now copy files to new repo, and sign it
+      (cd results
+          for DISTRO in *; do
+              for RELEASE in *; do
+                  for FILE in ${DISTRO}/${RELEASE}/*rpm ${DISTRO}/${RELEASE}/*deb; do
+                      [ -e ${FILE} ] || continue
+                      # this is strange, but will make the file location
+                      # be entirely be based on the remote ci-tools:
+                      cat ${FILE} | ssh ${FILE} ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/place-file-in-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f `basename ${FILE}` -m ${MD5SUM}" || {
+                          echo "Error placing ${FILE} "
+                          exit 1
+                      }
+                      ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/sign-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE}"
+                  done
+              done
+          done
+      )
 
 
       # Sign all involved prerel repos
-      ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/sign-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE}"
 
 
 
