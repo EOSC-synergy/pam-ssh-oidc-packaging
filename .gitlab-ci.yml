@@ -210,6 +210,7 @@ publish-all:
                           pwd
                           ls -la
                           for FILE in *rpm *deb; do
+                              [ -e ${FILE} ] || continue
                               MD5SUM=`md5sum $FILE | cut -d ' ' -f 1`
                               echo "MD5SUM: $MD5SUM - $FILE"
                               echo "ssh ${REPO_USER}@${REPO_HOST} ~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} -m ${MD5SUM}"
