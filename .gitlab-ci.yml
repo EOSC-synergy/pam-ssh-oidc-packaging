@@ -31,9 +31,11 @@ variables:
 
 .rpm-before-script: &rpm-before-script
   - |
+    set -x
     make get-sources
     make patch-for-rpm
     ls -la rpm
+    set +x
     echo "### before-script ##############################################"
     echo "CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}"
     echo "CI_COMMIT_BRANCH:   ${CI_COMMIT_BRANCH}"
