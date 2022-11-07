@@ -142,24 +142,24 @@ build-rockylinux-85:
 #    - *rpm-before-script
 
 
-build-opensuse-leap-15.3:
+build-opensuse-15.3:
   extends:
-    - .build-opensuse-leap-153
-    - .build-conditions-opensuse-leap-153
+    - .build-opensuse-153
+    - .build-conditions-opensuse-153
   before_script:
     - *rpm-before-script
 
-build-opensuse-leap-15.4:
+build-opensuse-15.4:
   extends:
-    - .build-opensuse-leap-154
-    - .build-conditions-opensuse-leap-154
+    - .build-opensuse-154
+    - .build-conditions-opensuse-154
   before_script:
     - *rpm-before-script
 
-build-opensuse-leap-15.5:
+build-opensuse-15.5:
   extends:
-    - .build-opensuse-leap-155
-    - .build-conditions-opensuse-leap-155
+    - .build-opensuse-155
+    - .build-conditions-opensuse-155
   before_script:
     - *rpm-before-script
 
