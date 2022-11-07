@@ -238,6 +238,7 @@ publish-all:
                           exit 1
                       }
                       ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/sign-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE}"
+                      echo "--------------------------------------------"
                   done
               done
           done
