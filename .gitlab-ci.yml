@@ -195,7 +195,8 @@ publish-all:
       find results
       (cd results
           for DISTRO in *; do
-              for RELEASE in ${DISTRO}/*; do
+              for R in ${DISTRO}/*; do
+                  RELEASE=`basename $R`
                   echo "DISTRO:  ${DISTRO}"
                   echo "RELEASE: ${RELEASE}"
                   echo "user@host: ${REPO_USER}@${REPO_HOST}"
@@ -225,6 +226,7 @@ publish-all:
       (cd results
           for DISTRO in *; do
               for RELEASE in ${DISTRO}/*; do
+                  RELEASE=`basename $R`
                   for FILE in ${DISTRO}/${RELEASE}/*rpm ${DISTRO}/${RELEASE}/*deb; do
                       [ -e ${FILE} ] || continue
                       # this is strange, but will make the file location
