@@ -195,7 +195,7 @@ publish-all:
                       (cd $RELEASE
                           echo "DISTRO:  ${DISTRO}"
                           echo "RELEASE: ${RELEASE}"
-                          echo "user@host: ${REPO_USER}@${REPO_HOST}
+                          echo "user@host: ${REPO_USER}@${REPO_HOST}"
                           # Ensure package version is not yet in pre-release
                           pwd
                           ls -la
