@@ -190,8 +190,10 @@ publish-debian-bookworm:
     - project: $CI_PROJECT_PATH
       job: build-debian-bookworm
       artifacts: true
+      ref: $CI_COMMIT_REF_NAME
     - project: m-team/integration/test-ssh-oidc
       job: integration-debian-bookworm
+      ref: main
       artifacts: false
 
   script:
