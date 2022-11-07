@@ -67,6 +67,9 @@ get-sources:
 	# the (broken) master was using  2730181aa31
 	(cd upstream; git checkout 2b253ede076)
 	mv upstream/common upstream/pam-password-token upstream/jsmn-web-tokens .
+	ls -la common
+	ls -la jsmn-web-tokens
+	ls -la pam-password-token
 	rm -rf upstream
 	rm -f .patched
 
