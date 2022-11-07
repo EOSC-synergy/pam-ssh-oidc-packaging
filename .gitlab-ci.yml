@@ -188,10 +188,12 @@ publish-all:
   script:
     - |
       find results
-      echo "aaaaaaaaaa"
+      echo "DISTRO:  ${DISTRO}"
+      echo "RELEASE: ${RELEASE}"
       # Ensure package version is not yet in pre-release
       (
           cd results/${DISTRO}/${RELEASE}
+          pwd
           ls -la
           for FILE in *rpm *deb; do 
               ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t {$PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} " || {
