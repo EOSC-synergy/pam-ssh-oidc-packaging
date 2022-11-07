@@ -210,8 +210,10 @@ publish-all:
                           pwd
                           ls -la
                           for FILE in *rpm *deb; do
-                              echo "ssh ${REPO_USER}@${REPO_HOST} ~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t {$PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} "
-                              ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t {$PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} " || {
+                              MD5SUM=`md5sum $FILE | cut -d ' ' -f 1`
+                              echo "MD5SUM: $MD5SUM - $FILE"
+                              echo "ssh ${REPO_USER}@${REPO_HOST} ~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} -m {$MD5SUM}"
+                              ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/is-file-in-repo.sh  -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE} -f ${FILE} -m {$MD5SUM}" || {
                                   echo "Error: File does already exist OR there was an ssh error"
                                   exit 1
                               }
@@ -226,7 +228,7 @@ publish-all:
       # Copy files to new repo
 
 
-      # Sign prerel repo
+      # Sign all involved prerel repos
       ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/sign-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE}"
 
 
