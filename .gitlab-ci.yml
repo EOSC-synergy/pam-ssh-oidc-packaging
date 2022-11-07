@@ -141,14 +141,6 @@ build-rockylinux-85:
 #  before_script:
 #    - *rpm-before-script
 
-
-build-opensuse-15.3:
-  extends:
-    - .build-opensuse-153
-    - .build-conditions-opensuse-153
-  before_script:
-    - *rpm-before-script
-
 build-opensuse-15.4:
   extends:
     - .build-opensuse-154
