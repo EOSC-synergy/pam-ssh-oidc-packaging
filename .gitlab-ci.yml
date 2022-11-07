@@ -68,12 +68,10 @@ build-debian-bookworm:
     - *deb-before-script
 
 
-
 build-ubuntu-bionic:
   extends:
     - .build-ubuntu-bionic
     - .build-conditions-ubuntu-bionic
-    - .on-push-and-master
   before_script:
     - *deb-before-script
 
