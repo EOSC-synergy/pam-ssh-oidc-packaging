@@ -190,8 +190,8 @@ publish-all:
   image: "marcvs/test_ssh-oidc_debian-bookworm:1"
 
   script:
+    - !reference [.ssh-key-script]
     - |
-      !reference [.ssh-key-script]
       find results
       (cd results
           for DISTRO in *; do
