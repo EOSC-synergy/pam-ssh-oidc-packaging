@@ -169,7 +169,7 @@ integration-tests:
     - .on-push-and-master
   inherit:
     variables: false
-  variables:    
+  variables:
     # these variables are actually transported to the other side,
     # even though inherit:variables:false
     HORRIBLE_MESS: marcus-hates-this
@@ -182,6 +182,8 @@ integration-tests:
     strategy: depend
 
 publish-all:
+  extends:
+    - .repo-definition
   stage: publish
   image: "marcvs/test_ssh-oidc_debian-bookworm:1"
 
