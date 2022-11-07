@@ -191,7 +191,7 @@ publish-all:
 
   script:
     - |
-      *ssh-key-script
+      !reference [.ssh-key-script]
       find results
       (cd results
           for DISTRO in *; do
