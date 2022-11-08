@@ -127,7 +127,7 @@ build-rockylinux-8:
     - .build-rockylinux-85
     - .never
 
-build-rockylinux-85:
+build-rockylinux-8.5:
   extends:
     - .build-rockylinux-85
     - .build-conditions-rockylinux-85
