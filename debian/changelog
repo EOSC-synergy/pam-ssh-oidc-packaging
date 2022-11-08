@@ -7,6 +7,23 @@ pam-ssh-oidc (0.2.0-2) UNRELEASED; urgency=medium
  -- Marcus Hardt <marcus@hardt-it.de>  Thu, 20 Oct 2022 12:39:24 +0200
 
 
+pam-ssh-oidc (0.1.4-1) UNRELEASED; urgency=medium
+
+  [ Marcus Hardt ]
+  * Fix broken commit used for building
+
+ -- Marcus Hardt <marcus@hardt-it.de>  Thu, 20 Oct 2022 10:28:28 +0200
+
+
+pam-ssh-oidc (0.1.3-1) UNRELEASED; urgency=medium
+
+  [ Marcus Hardt ]
+  * Incorprate changes from upstream
+  * Silence log output (libcurl in particular)
+
+ -- Marcus Hardt <marcus@hardt-it.de>  Thu, 08 Jul 2021 17:53:10 +0200
+
+
 pam-ssh-oidc (0.1.2-8) UNRELEASED; urgency=medium
 
   [ Marcus Hardt ]

@@ -48,12 +48,17 @@ $(CLEANDIRS):
 
 distclean: clean
 	rm -rf rpm/rpmbuild
+	rm -rf upstream 
+
+marcusclean: distclean
+	rm -rf common pam-password-token jsmn-web-tokens
+	rm -rf .pc .patched
 
 package-clean:
 	@echo PACKAGE_CLEAN
 	quilt pop -a -f || true
 	./debian/rules clean
-	rm -rf common pam-password-token jsmn-web-tokens .patched .pc
+	rm -rf common pam-password-token jsmn-web-tokens .patched .pc upstream
 
 .PHONY: subdirs $(INSTALLDIRS)
 .PHONY: subdirs $(SUBDIRS)

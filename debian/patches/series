@@ -1,7 +1,5 @@
-dont-log-password
 fix-install-dirs
 create-install-dirs
 select-packages-to-build
 fix-config-ini
-compiler-simplification
 remove-libaudit

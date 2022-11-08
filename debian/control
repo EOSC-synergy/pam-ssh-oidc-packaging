@@ -2,10 +2,9 @@ Source: pam-ssh-oidc
 Section: admin
 Priority: extra
 Maintainer: Marcus Hardt <marcus@hardt-it.de>
-Homepage: n/a
+Homepage: https://github.com/EOSC-synergy/ssh-oidc
 Standards-Version: 4.5.0
-Vcs-Git: 
-Vcs-Browser: n/a
+Vcs-Git: https://github.com/EOSC-synergy/pam-ssh-oidc-packaging
 Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 11),
                fakeroot,

@@ -244,9 +244,3 @@ publish-all:
               done
           done
       )
-
-
-      # Sign all involved prerel repos
-
-
-
