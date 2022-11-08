@@ -155,7 +155,6 @@ build-opensuse-15.5:
     - .build-opensuse-155
     - .build-conditions-opensuse-155
   before_script:
-    - env
     - *rpm-before-script
 
 build-opensuse-tumbleweed:
