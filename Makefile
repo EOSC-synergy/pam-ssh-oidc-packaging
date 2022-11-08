@@ -48,17 +48,12 @@ $(CLEANDIRS):
 
 distclean: clean
 	rm -rf rpm/rpmbuild
-	rm -rf upstream 
-
-marcusclean: distclean
-	rm -rf common pam-password-token jsmn-web-tokens
-	rm -rf .pc .patched
 
 package-clean:
 	@echo PACKAGE_CLEAN
 	quilt pop -a -f || true
 	./debian/rules clean
-	rm -rf common pam-password-token jsmn-web-tokens .patched .pc upstream
+	rm -rf common pam-password-token jsmn-web-tokens .patched .pc
 
 .PHONY: subdirs $(INSTALLDIRS)
 .PHONY: subdirs $(SUBDIRS)
@@ -69,9 +64,13 @@ package-clean:
 get-sources:
 	@echo GET-SOURCES
 	git clone https://git.man.poznan.pl/stash/scm/pracelab/pam.git upstream -b develop
-	(cd upstream; git checkout 2730181aa3129738b022181d848adb0f48052b60)
+	# the (broken) master was using  2730181aa31
+	(cd upstream; git checkout 2b253ede076)
 	mv upstream/common upstream/pam-password-token upstream/jsmn-web-tokens .
-	#rm -rf upstream
+	ls -la common
+	ls -la jsmn-web-tokens
+	ls -la pam-password-token
+	rm -rf upstream
 	rm -f .patched
 
 info:
@@ -312,6 +311,7 @@ patch-for-rpm:
 		done; \
     fi
 	@touch .patched
+	find rpm
 .PHONY: unpatch-for-rpm
 unpatch-for-rpm:
 	@if [ -e ".patched" ]; then \
@@ -340,8 +340,11 @@ rpms: srpm rpm
 
 .PHONY: rpm
 rpm: srctar
+	find rpm
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}.spec
+	find rpm
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}-autoconfig.spec
+	find rpm
 
 .PHONY: srpm
 srpm: srctar
