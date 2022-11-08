@@ -161,7 +161,6 @@ build-opensuse-tumbleweed:
   extends:
     - .build-opensuse-tumbleweed
     - .build-conditions-opensuse-tumbleweed
-  allow_failure: true
   before_script:
     - *rpm-before-script
 
