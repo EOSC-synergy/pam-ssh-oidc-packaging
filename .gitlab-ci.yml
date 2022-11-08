@@ -237,9 +237,10 @@ publish-all:
                           echo "Error placing ${FILE} "
                           exit 1
                       }
-                      ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/sign-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE}"
                       echo "--------------------------------------------"
                   done
+                  ssh ${REPO_USER}@${REPO_HOST} "~/ci-voodoo/ci-tools/sign-repo.sh -t ${PUBLISH_RESULTS_REPO} -d ${DISTRO} -r ${RELEASE}"
+                  echo "============================================"
               done
           done
       )
