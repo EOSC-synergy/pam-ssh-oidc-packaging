@@ -198,7 +198,7 @@ publish-to-devel:
     - .repo-definition
     - .upload-all-to-repo
   rules:
-    - if: $CI_COMMIT_BRANCH -= $PREREL_BRANCH_NAME
+    - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       hen: never
