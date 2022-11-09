@@ -191,6 +191,20 @@ integration-tests:
     branch: main
     strategy: depend
 
+publish-to-devel:
+  # The stage is declared in .publish-to-repo, so it runs after the
+  # integration stage
+  extends:
+    - .repo-definition
+    - .upload-all-to-repo
+  rules:
+    - if: $CI_COMMIT_BRANCH -= $PREREL_BRANCH_NAME
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      hen: never
+  variables:
+    REPO_TO_PUBLISH_TO: $ANYBRANCH_PUBLISH_RESULTS_REPO
+
 publish-to-prerel:
   # The stage is declared in .publish-to-repo, so it runs after the
   # integration stage
