@@ -187,6 +187,7 @@ integration-tests:
     CI_UPSTREAM_DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
     # FIXME: This must be different, depending on which branch we start from
     RESOLVE_DEPENDENCIES_REPO: $ANYBRANCH_RESOLVE_DEPENDENCIES_REPO
+    MY_RESOLVE_DEPENDENCIES_REPO: 'devel'
   trigger:
     project: m-team/integration/test-ssh-oidc
     branch: main
