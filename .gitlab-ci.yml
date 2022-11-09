@@ -182,10 +182,11 @@ integration-tests:
   variables:
     # these variables are actually transported to the other side,
     # even though inherit:variables:false
-    HORRIBLE_MESS: marcus-hates-this
     CI_UPSTREAM_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
     CI_UPSTREAM_COMMIT_BRANCH: $CI_COMMIT_BRANCH
     CI_UPSTREAM_DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
+    # FIXME: This must be different, depending on which branch we start from
+    RESOLVE_DEPENDENCIES_REPO: $ANYBRANCH_RESOLVE_DEPENDENCIES_REPO
   trigger:
     project: m-team/integration/test-ssh-oidc
     branch: main
