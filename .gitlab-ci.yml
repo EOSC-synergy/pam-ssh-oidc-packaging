@@ -194,4 +194,4 @@ integration-tests:
 publish-all:
   extends:
     - .repo-definition
-    - .publish-to-prerel
+    - .publish-to-repo
