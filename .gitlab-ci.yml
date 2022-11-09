@@ -196,7 +196,7 @@ publish-to-prerel:
   # integration stage
   extends:
     - .repo-definition
-    - .publish-to-repo
+    - .upload-all-to-repo
   rules:
     - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
   variables:
