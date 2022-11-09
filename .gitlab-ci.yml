@@ -194,6 +194,7 @@ integration-tests:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
         RESOLVE_DEPENDENCIES_REPO: $PREPROD_RESOLVE_DEPENDENCIES_REPO
+    - when: always
   trigger:
     project: m-team/integration/test-ssh-oidc
     branch: main
