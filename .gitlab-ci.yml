@@ -197,6 +197,9 @@ publish-to-devel:
   extends:
     - .repo-definition
     - .publish-to-repo
+  #rules:
+  #  - if $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  #    when: never
   variables:
     REPO_TO_PUBLISH_TO: $ANY_PUBLISH_RESULTS_REPO
 
