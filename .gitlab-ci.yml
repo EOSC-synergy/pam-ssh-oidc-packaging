@@ -208,4 +208,4 @@ publish-to-pre-productions:
     variables:
       - $CI_COMMIT_BRANCH == $CI_UPSTREAM_DEFAULT_BRANCH
   variables:
-    - REPO_TO_PUBLISH_TO: preprod
+    - REPO_TO_PUBLISH_TO: pre-prod
