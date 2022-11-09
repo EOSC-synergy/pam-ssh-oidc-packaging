@@ -173,12 +173,10 @@ build-opensuse-tumbleweed:
   before_script:
     - *rpm-before-script
 
-integration-tests-prerel:
+integration-tests:
   stage: integration
   extends:
     - .on-push-and-master
-  rules:
-    - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
   inherit:
     variables: false
   variables:
