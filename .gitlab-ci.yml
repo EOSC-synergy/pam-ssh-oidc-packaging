@@ -201,7 +201,7 @@ publish-to-devel:
     - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      hen: never
+      when: never
   variables:
     REPO_TO_PUBLISH_TO: $ANYBRANCH_PUBLISH_RESULTS_REPO
 
