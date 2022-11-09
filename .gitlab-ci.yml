@@ -191,7 +191,9 @@ integration-tests:
     branch: main
     strategy: depend
 
-publish-all:
+publish-to-devel:
   extends:
     - .repo-definition
     - .publish-to-repo
+  variables:
+    - REPO_TO_PUBLISH_TO: $ANY_PUBLISH_RESULTS_REPO
