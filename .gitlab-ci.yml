@@ -12,13 +12,13 @@ variables:
   PACKAGE_NAMES: 'pam-ssh-oidc pam-ssh-oidc-autoconfig'
   #TARGET_REPO: 'devel'
   # The following varialbes can be overwritten only in specific targets
-  # See global-defaults.yml -> .repo-definition for the full list
-  # REPO_BASE
+  # See generic-ci.yml -> .repo-definition for the full list
+  # REPO_BASE => deprecated
   # REPO_USER
   # REPO_HOST
   # PUBLISH_BUILD_RESULTS_REPO: 'devel'
   # PUBLISH_TESTED_RESULTS_REPO: 'prerel'
-  # PUBLISH_MASTER_RESULTS_REPO: 'preprod'
+  # PUBLISH_MASTER_RESULTS_REPO: 'for-prod'
   # PREREL_BRANCH_NAME: 'prerel'
   # See generic-ci.yml -> .build-definition for the full list
   # DOCKER_IMAGE_VERSION
