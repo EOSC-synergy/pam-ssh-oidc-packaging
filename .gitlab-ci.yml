@@ -176,6 +176,7 @@ build-opensuse-tumbleweed:
 integration-tests:
   stage: integration
   extends:
+    - .repo-definition
     - .on-push-and-master
   inherit:
     variables: false
