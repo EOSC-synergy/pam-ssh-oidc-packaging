@@ -1,6 +1,7 @@
 ---
 include:
-  - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/generic-ci.yml'
+  #- 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/generic-ci.yml'
+  - 'https://marcus.hardt-it.de/ci-voodoo/ci-include/generic-ci.yml'
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs.yml'
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/distro-build-conditions.yml'
 
