@@ -190,9 +190,7 @@ integration-tests:
     branch: main
     strategy: depend
 
-publish-to-prerelease:
+publish-all:
   extends:
     - .repo-definition
     - .publish-to-prerel
-  variables:
-    - REPO_TO_PUBLISH_TO: xxxxxxxxxx
