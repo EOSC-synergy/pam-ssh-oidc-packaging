@@ -192,6 +192,8 @@ integration-tests:
     strategy: depend
 
 publish-to-devel:
+  # The stage is declared in .publish-to-repo, so it runs after the
+  # integration stage
   extends:
     - .repo-definition
     - .publish-to-repo
