@@ -196,4 +196,4 @@ publish-to-devel:
     - .repo-definition
     - .publish-to-repo
   variables:
-    - REPO_TO_PUBLISH_TO: $ANY_PUBLISH_RESULTS_REPO
+    REPO_TO_PUBLISH_TO: $ANY_PUBLISH_RESULTS_REPO
