@@ -123,7 +123,7 @@ build-centos-stream:
 
 build-rockylinux-8:
   extends:
-    - .build-rockylinux-85
+    - .build-rockylinux-8
 
 build-rockylinux-8.5:
   extends:
