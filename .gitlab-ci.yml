@@ -59,7 +59,6 @@ variables:
 build-debian-buster:
   extends:
     - .build-debian-buster
-    - .build-conditions-debian-buster
   before_script:
     - *deb-before-script
   # variables:
@@ -68,14 +67,12 @@ build-debian-buster:
 build-debian-bullseye:
   extends:
     - .build-debian-bullseye
-    - .build-conditions-debian-bullseye
   before_script:
     - *deb-before-script
 
 build-debian-bookworm:
   extends:
     - .build-debian-bookworm
-    - .build-conditions-debian-bookworm
   before_script:
     - *deb-before-script
 
@@ -83,50 +80,43 @@ build-debian-bookworm:
 build-ubuntu-bionic:
   extends:
     - .build-ubuntu-bionic
-    - .build-conditions-ubuntu-bionic
   before_script:
     - *deb-before-script
 
 build-ubuntu-focal:
   extends:
     - .build-ubuntu-focal
-    - .build-conditions-ubuntu-focal
   before_script:
     - *deb-before-script
 
 build-ubuntu-jammy:
   extends:
     - .build-ubuntu-jammy
-    - .build-conditions-ubuntu-jammy
   before_script:
     - *deb-before-script
 
 build-ubuntu-kinetic:
   extends:
     - .build-ubuntu-kinetic
-    - .build-conditions-ubuntu-kinetic
   before_script:
     - *deb-before-script
+
 
 build-centos-7:
   extends:
     - .build-centos-7
-    - .build-conditions-centos-7
   before_script:
     - *rpm-before-script
-
 
 build-centos-8:
   extends:
     - .build-centos-8
-    - .build-conditions-centos-8
   before_script:
     - *rpm-before-script
 
 build-centos-stream:
   extends:
     - .build-centos-stream
-    - .build-conditions-centos-stream
   before_script:
     - *rpm-before-script
 
@@ -134,12 +124,10 @@ build-centos-stream:
 build-rockylinux-8:
   extends:
     - .build-rockylinux-85
-    - .never
 
 build-rockylinux-8.5:
   extends:
     - .build-rockylinux-85
-    - .build-conditions-rockylinux-85
   before_script:
     - *rpm-before-script
 
@@ -155,21 +143,18 @@ build-rockylinux-8.5:
 build-opensuse-15.4:
   extends:
     - .build-opensuse-154
-    - .build-conditions-opensuse-154
   before_script:
     - *rpm-before-script
 
 build-opensuse-15.5:
   extends:
     - .build-opensuse-155
-    - .build-conditions-opensuse-155
   before_script:
     - *rpm-before-script
 
 build-opensuse-tumbleweed:
   extends:
     - .build-opensuse-tumbleweed
-    - .build-conditions-opensuse-tumbleweed
   before_script:
     - *rpm-before-script
 
