@@ -155,10 +155,6 @@ build-opensuse-15.5:
 build-opensuse-tumbleweed:
   extends:
     - .build-opensuse-tumbleweed
-<<<<<<< HEAD
-    - .build-conditions-opensuse-tumbleweed
-=======
->>>>>>> prerel
   before_script:
     - *rpm-before-script
 
