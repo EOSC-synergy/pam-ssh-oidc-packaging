@@ -229,7 +229,6 @@ publish-to-preprod:
     REPO_TO_PUBLISH_TO: $PREPROD_PUBLISH_RESULTS_REPO
 
 
-    
 
 
 
