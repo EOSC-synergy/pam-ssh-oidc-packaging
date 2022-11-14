@@ -1,6 +1,7 @@
 ---
 include:
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/generic-ci.yml'
+  #- 'https://marcus.hardt-it.de/ci-voodoo/ci-include/generic-ci.yml'
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs.yml'
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/distro-build-conditions.yml'
 
@@ -12,9 +13,17 @@ variables:
   PACKAGE_NAMES: 'pam-ssh-oidc pam-ssh-oidc-autoconfig'
   #TARGET_REPO: 'devel'
   # The following varialbes can be overwritten only in specific targets
-  # REPO_BASE
+  # See generic-ci.yml -> .repo-definition for the full list
+  # REPO_BASE => deprecated
   # REPO_USER
   # REPO_HOST
+  # PUBLISH_BUILD_RESULTS_REPO: 'devel'
+  # PUBLISH_TESTED_RESULTS_REPO: 'prerel'
+  # PUBLISH_MASTER_RESULTS_REPO: 'for-prod'
+  # PREREL_BRANCH_NAME: 'prerel'
+  # See generic-ci.yml -> .build-definition for the full list
+  # DOCKER_IMAGE_VERSION
+  # DOCKER_IMAGE_VERSION_WINDOWS
 
 .deb-before-script: &deb-before-script
   - |
@@ -50,7 +59,6 @@ variables:
 build-debian-buster:
   extends:
     - .build-debian-buster
-    - .build-conditions-debian-buster
   before_script:
     - *deb-before-script
   # variables:
@@ -59,14 +67,12 @@ build-debian-buster:
 build-debian-bullseye:
   extends:
     - .build-debian-bullseye
-    - .build-conditions-debian-bullseye
   before_script:
     - *deb-before-script
 
 build-debian-bookworm:
   extends:
     - .build-debian-bookworm
-    - .build-conditions-debian-bookworm
   before_script:
     - *deb-before-script
 
@@ -74,63 +80,54 @@ build-debian-bookworm:
 build-ubuntu-bionic:
   extends:
     - .build-ubuntu-bionic
-    - .build-conditions-ubuntu-bionic
   before_script:
     - *deb-before-script
 
 build-ubuntu-focal:
   extends:
     - .build-ubuntu-focal
-    - .build-conditions-ubuntu-focal
   before_script:
     - *deb-before-script
 
 build-ubuntu-jammy:
   extends:
     - .build-ubuntu-jammy
-    - .build-conditions-ubuntu-jammy
   before_script:
     - *deb-before-script
 
 build-ubuntu-kinetic:
   extends:
     - .build-ubuntu-kinetic
-    - .build-conditions-ubuntu-kinetic
   before_script:
     - *deb-before-script
+
 
 build-centos-7:
   extends:
     - .build-centos-7
-    - .build-conditions-centos-7
   before_script:
     - *rpm-before-script
-
 
 build-centos-8:
   extends:
     - .build-centos-8
-    - .build-conditions-centos-8
   before_script:
     - *rpm-before-script
 
 build-centos-stream:
   extends:
     - .build-centos-stream
-    - .build-conditions-centos-stream
   before_script:
     - *rpm-before-script
 
 
 build-rockylinux-8:
   extends:
-    - .build-rockylinux-85
-    - .never
+    - .build-rockylinux-8
 
 build-rockylinux-8.5:
   extends:
     - .build-rockylinux-85
-    - .build-conditions-rockylinux-85
   before_script:
     - *rpm-before-script
 
@@ -146,43 +143,92 @@ build-rockylinux-8.5:
 build-opensuse-15.4:
   extends:
     - .build-opensuse-154
-    - .build-conditions-opensuse-154
   before_script:
     - *rpm-before-script
 
 build-opensuse-15.5:
   extends:
     - .build-opensuse-155
-    - .build-conditions-opensuse-155
   before_script:
     - *rpm-before-script
 
 build-opensuse-tumbleweed:
   extends:
     - .build-opensuse-tumbleweed
+<<<<<<< HEAD
     - .build-conditions-opensuse-tumbleweed
+=======
+>>>>>>> prerel
   before_script:
     - *rpm-before-script
 
 integration-tests:
   stage: integration
   extends:
+    - .repo-definition
     - .on-push-and-master
   inherit:
     variables: false
   variables:
     # these variables are actually transported to the other side,
     # even though inherit:variables:false
-    HORRIBLE_MESS: marcus-hates-this
     CI_UPSTREAM_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
     CI_UPSTREAM_COMMIT_BRANCH: $CI_COMMIT_BRANCH
     CI_UPSTREAM_DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
+    RESOLVE_DEPENDENCIES_REPO: $ANYBRANCH_RESOLVE_DEPENDENCIES_REPO
+    CI_UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
+    CI_UPSTREAM_PROJECT_PATH: $CI_PROJECT_PATH
+    CI_UPSTREAM_BUILD_REF: $CI_BUILD_REF
+    CI_UPSTREAM_BUILD_REF_NAME: $CI_BUILD_REF_NAME
+    CI_UPSTREAM_JOB_NAME: $CI_JOB_NAME
+    CI_UPSTREAM_COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
+      variables:
+        RESOLVE_DEPENDENCIES_REPO: $PREREL_RESOLVE_DEPENDENCIES_REPO
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        RESOLVE_DEPENDENCIES_REPO: $PREPROD_RESOLVE_DEPENDENCIES_REPO
+    - when: always
   trigger:
     project: m-team/integration/test-ssh-oidc
     branch: main
     strategy: depend
 
-publish-all:
+publish-to-devel:
+  # The stage is declared in .publish-to-repo, so it runs after the
+  # integration stage
   extends:
     - .repo-definition
-    - .publish-to-prerel
+    - .upload-all-to-repo
+  rules:
+    - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: never
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+  variables:
+    REPO_TO_PUBLISH_TO: $ANYBRANCH_PUBLISH_RESULTS_REPO
+
+publish-to-prerel:
+  # The stage is declared in .publish-to-repo, so it runs after the
+  # integration stage
+  extends:
+    - .repo-definition
+    - .upload-all-to-repo
+  rules:
+    - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
+  variables:
+    REPO_TO_PUBLISH_TO: $PREREL_PUBLISH_RESULTS_REPO
+
+publish-to-preprod:
+  # The stage is declared in .publish-to-repo, so it runs after the
+  # integration stage
+  extends:
+    - .repo-definition
+    - .upload-all-to-repo
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  variables:
+    REPO_TO_PUBLISH_TO: $PREPROD_PUBLISH_RESULTS_REPO
+
