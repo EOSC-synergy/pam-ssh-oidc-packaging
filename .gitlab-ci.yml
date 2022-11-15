@@ -61,8 +61,6 @@ build-debian-buster:
     - .build-debian-buster
   before_script:
     - *deb-before-script
-  # variables:
-  #   REPO_BASE: '/var/www/prerel'
 
 build-debian-bullseye:
   extends:
