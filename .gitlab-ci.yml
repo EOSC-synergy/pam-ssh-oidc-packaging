@@ -159,37 +159,9 @@ build-opensuse-tumbleweed:
     - *rpm-before-script
 
 integration-tests:
-  stage: integration
   extends:
-    - .repo-definition
-    - .on-push-and-master
-  inherit:
-    variables: false
-  variables:
-    # these variables are actually transported to the other side,
-    # even though inherit:variables:false
-    CI_UPSTREAM_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
-    CI_UPSTREAM_COMMIT_BRANCH: $CI_COMMIT_BRANCH
-    CI_UPSTREAM_DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
-    RESOLVE_DEPENDENCIES_REPO: $ANYBRANCH_RESOLVE_DEPENDENCIES_REPO
-    CI_UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
-    CI_UPSTREAM_PROJECT_PATH: $CI_PROJECT_PATH
-    CI_UPSTREAM_BUILD_REF: $CI_BUILD_REF
-    CI_UPSTREAM_BUILD_REF_NAME: $CI_BUILD_REF_NAME
-    CI_UPSTREAM_JOB_NAME: $CI_JOB_NAME
-    CI_UPSTREAM_COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
-  rules:
-    - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
-      variables:
-        RESOLVE_DEPENDENCIES_REPO: $PREREL_RESOLVE_DEPENDENCIES_REPO
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      variables:
-        RESOLVE_DEPENDENCIES_REPO: $PREPROD_RESOLVE_DEPENDENCIES_REPO
-    - when: always
-  trigger:
-    project: m-team/integration/test-ssh-oidc
-    branch: main
-    strategy: depend
+    - .integration-tests-ssh-oidc
+
 
 publish-to-devel:
   # The stage is declared in .publish-to-repo, so it runs after the
