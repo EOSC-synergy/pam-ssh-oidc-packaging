@@ -4,7 +4,7 @@ PKG_NAME_UPSTREAM = pam-ssh-oidc
 SPECFILE := rpm/${PKG_NAME}.spec
 RPM_VERSION := $(shell grep ^Version ${SPECFILE} | cut -d : -f 2 | sed s/\ //g)
 
-DEBIAN_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | cut -d \- -f 1)
+DEBIAN_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | sed s/-[0-9][0-9]*//)
 VERSION := $(DEBIAN_VERSION)
 
 
