@@ -31,13 +31,13 @@ PREREL=$(git rev-list --count HEAD ^$MASTER_BRANCH)
 # if we store the version in debian changelog:
 [ -e debian/changelog ] && {
     # get the latest version
-    VERSION=$(cat debian/changelog \
+    DEBIAN_VERSION=$(cat debian/changelog \
         | grep "(.*) " \
         | head -n 1 \
         | cut -d\( -f 2 \
         | cut -d\) -f 1)
-    DEBIAN_VERSION=$(echo $VERSION | cut -d- -f 1)
-    DEBIAN_RELEASE=$(echo $VERSION | cut -d- -f 2)
+    VERSION=$(echo $DEBIAN_VERSION | cut -d- -f 1)
+    RELEASE=$(echo $DEBIAN_VERSION | cut -d- -f 2)
     PR_VERSION="${VERSION}-pr${PREREL}"
     sed s%${VERSION}%${PR_VERSION}% -i debian/changelog
     #echo "$VERSION => $DEBIAN_VERSION + $DEBIAN_RELEASE => $PR_VERSION"
