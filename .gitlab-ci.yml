@@ -1,9 +1,8 @@
 ---
 include:
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/generic-ci.yml'
-  #- 'https://marcus.hardt-it.de/ci-voodoo/ci-include/generic-ci.yml'
-  - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs.yml'
-  - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/distro-build-conditions.yml'
+  # we don't need the pipeline jobs, since we have to override all of them # here
+  #- 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs.yml'
 
 
 variables:
@@ -37,6 +36,7 @@ variables:
     echo "CI_UPSTREAM_COMMIT_BRANCH:    $CI_UPSTREAM_COMMT_BRANCH"
     echo "CI_UPSTREAM_DEFAULT_BRANCH:   $CI_UPSTREAM_DEFAULT_BRANCH"
     echo "### /before-script ##############################################"
+  - !reference [.default-before-script]
 
 .rpm-before-script: &rpm-before-script
   - |
@@ -54,6 +54,7 @@ variables:
     echo "CI_UPSTREAM_COMMIT_BRANCH:    $CI_UPSTREAM_COMMT_BRANCH"
     echo "CI_UPSTREAM_DEFAULT_BRANCH:   $CI_UPSTREAM_DEFAULT_BRANCH"
     echo "### /before-script ##############################################"
+  - !reference [.default-before-script]
 
 
 build-debian-buster:
@@ -61,8 +62,6 @@ build-debian-buster:
     - .build-debian-buster
   before_script:
     - *deb-before-script
-  # variables:
-  #   REPO_BASE: '/var/www/prerel'
 
 build-debian-bullseye:
   extends:
@@ -158,73 +157,20 @@ build-opensuse-tumbleweed:
   before_script:
     - *rpm-before-script
 
+##########################################################################
+# Integration (These might to to a central job def)
 integration-tests:
-  stage: integration
   extends:
-    - .repo-definition
-    - .on-push-and-master
-  inherit:
-    variables: false
-  variables:
-    # these variables are actually transported to the other side,
-    # even though inherit:variables:false
-    CI_UPSTREAM_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
-    CI_UPSTREAM_COMMIT_BRANCH: $CI_COMMIT_BRANCH
-    CI_UPSTREAM_DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
-    RESOLVE_DEPENDENCIES_REPO: $ANYBRANCH_RESOLVE_DEPENDENCIES_REPO
-    CI_UPSTREAM_PROJECT_NAME: $CI_PROJECT_NAME
-    CI_UPSTREAM_PROJECT_PATH: $CI_PROJECT_PATH
-    CI_UPSTREAM_BUILD_REF: $CI_BUILD_REF
-    CI_UPSTREAM_BUILD_REF_NAME: $CI_BUILD_REF_NAME
-    CI_UPSTREAM_JOB_NAME: $CI_JOB_NAME
-    CI_UPSTREAM_COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
-  rules:
-    - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
-      variables:
-        RESOLVE_DEPENDENCIES_REPO: $PREREL_RESOLVE_DEPENDENCIES_REPO
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      variables:
-        RESOLVE_DEPENDENCIES_REPO: $PREPROD_RESOLVE_DEPENDENCIES_REPO
-    - when: always
-  trigger:
-    project: m-team/integration/test-ssh-oidc
-    branch: main
-    strategy: depend
+    - .trigger-integration-tests-ssh-oidc
 
 publish-to-devel:
-  # The stage is declared in .publish-to-repo, so it runs after the
-  # integration stage
   extends:
-    - .repo-definition
-    - .upload-all-to-repo
-  rules:
-    - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
-      when: never
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: never
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-  variables:
-    REPO_TO_PUBLISH_TO: $ANYBRANCH_PUBLISH_RESULTS_REPO
+    - .publish-to-devel
 
 publish-to-prerel:
-  # The stage is declared in .publish-to-repo, so it runs after the
-  # integration stage
   extends:
-    - .repo-definition
-    - .upload-all-to-repo
-  rules:
-    - if: $CI_COMMIT_BRANCH == $PREREL_BRANCH_NAME
-  variables:
-    REPO_TO_PUBLISH_TO: $PREREL_PUBLISH_RESULTS_REPO
+    - .publish-to-prerel
 
 publish-to-preprod:
-  # The stage is declared in .publish-to-repo, so it runs after the
-  # integration stage
   extends:
-    - .repo-definition
-    - .upload-all-to-repo
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  variables:
-    REPO_TO_PUBLISH_TO: $PREPROD_PUBLISH_RESULTS_REPO
-
+    - .publish-to-preprod
