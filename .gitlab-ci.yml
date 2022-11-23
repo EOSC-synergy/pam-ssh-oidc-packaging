@@ -23,13 +23,11 @@ variables:
   # DOCKER_IMAGE_VERSION
   # DOCKER_IMAGE_VERSION_WINDOWS
   PREREL_BRANCH_NAME: 'ci/devel'
-  REPO_USER: 'thisisatest'
-  JUST_A_TEST: 'marcusistesting'
 
 .deb-before-script: &deb-before-script
   - |
     make get-sources
-    echo "### before-script ##############################################"
+    echo "### pam-ssh-before-script ##############################################"
     echo "CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}"
     echo "CI_COMMIT_BRANCH:   ${CI_COMMIT_BRANCH}"
     echo "CI_DEFAULT_BRANCH:  ${CI_DEFAULT_BRANCH}"
