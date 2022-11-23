@@ -1,6 +1,6 @@
 Name: pam-ssh-oidc-autoconfig
-%define ver %(head debian/changelog -n 1 | cut -d \\\( -f 2 | cut -d \\\) -f 1 | sed s/-[0-9][0-9]*// | sed s/-pr/^pr/g)
-%define rel %(head debian/changelog -n 1 | cut -d \\\( -f 2 | cut -d \\\) -f 1 | sed s/"pr[0-9][0-9]-"*// | cut -d - -f 2)
+%define ver %(head debian/changelog -n 1|cut -d \\\( -f 2|cut -d \\\) -f 1|cut -d \- -f 1)
+%define rel %(head debian/changelog -n 1|cut -d \\\( -f 2|cut -d \\\) -f 1|cut -d \- -f 2)
 Version: %{ver}
 Release: %{rel}
 
