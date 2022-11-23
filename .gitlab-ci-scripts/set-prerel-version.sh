@@ -1,7 +1,14 @@
 #!/bin/bash
 
 VERSION_FILE=VERSION
+DEVSTRING="pr"
 
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --devstring)          DEVSTRING=$2;                     shift; ;;
+    esac
+    shift
+done
 
 [ "x${CI}" == "xtrue" ] && {
     git config --global --add safe.directory "$PWD"
@@ -25,7 +32,7 @@ PREREL=$(git rev-list --count HEAD ^"$MASTER_BRANCH")
 [ -e $VERSION_FILE ] && {
     # version for Makefile to set it in various places
     VERSION=$(cat $VERSION_FILE)
-    PR_VERSION="${VERSION}-pr${PREREL}"
+    PR_VERSION="${VERSION}~${DEVSTRING}${PREREL}"
     echo "$PR_VERSION" > $VERSION_FILE
     echo "$PR_VERSION"
 }
@@ -40,7 +47,7 @@ PREREL=$(git rev-list --count HEAD ^"$MASTER_BRANCH")
         | cut -d\) -f 1)
     VERSION=$(echo "$DEBIAN_VERSION" | cut -d- -f 1)
     RELEASE=$(echo "$DEBIAN_VERSION" | cut -d- -f 2)
-    PR_VERSION="${VERSION}-pr${PREREL}"
+    PR_VERSION="${VERSION}~{DEVSTRING}${PREREL}"
     sed s%${VERSION}%${PR_VERSION}% -i debian/changelog
     #echo "$VERSION => $DEBIAN_VERSION + $DEBIAN_RELEASE => $PR_VERSION"
 }
@@ -49,7 +56,7 @@ PREREL=$(git rev-list --count HEAD ^"$MASTER_BRANCH")
 SPEC_FILES=$(ls rpm/*spec)
 [ -z "${SPEC_FILES}" ] || {
     [ -z "${VERSION}" ] || {
-        PR_VERSION="${VERSION}~pr${PREREL}"
+        PR_VERSION="${VERSION}~${DEVSTRING}${PREREL}"
         for SPEC_FILE in $SPEC_FILES; do
             grep -q "$VERSION" "$SPEC_FILE" && { # version found, needs update
                 sed "s/${VERSION}/${PR_VERSION}/" -i "$SPEC_FILE"
