@@ -9,7 +9,6 @@ variables:
   # These variables are set globally here:
   DOCKER_IMAGE_NAMESPACE: 'marcvs/build'
   DOCKER_IMAGE_NAME: 'pam-ssh-oidc-packaging'
-  PACKAGE_NAMES: 'pam-ssh-oidc pam-ssh-oidc-autoconfig'
   #TARGET_REPO: 'devel'
   # The following varialbes can be overwritten only in specific targets
   # See generic-ci.yml -> .repo-definition for the full list
@@ -23,6 +22,9 @@ variables:
   # See generic-ci.yml -> .build-definition for the full list
   # DOCKER_IMAGE_VERSION
   # DOCKER_IMAGE_VERSION_WINDOWS
+  PREREL_BRANCH_NAME: 'ci/devel'
+  REPO_USER: 'thisisatest'
+  JUST_A_TEST: 'marcusistesting'
 
 .deb-before-script: &deb-before-script
   - |
