@@ -352,3 +352,4 @@ srpm: srctar
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bs  rpm/${PKG_NAME}.spec
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bs  rpm/${PKG_NAME}-autoconfig.spec
 
+
