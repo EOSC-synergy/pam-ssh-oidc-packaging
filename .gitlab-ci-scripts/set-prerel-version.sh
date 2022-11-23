@@ -12,20 +12,22 @@ VERSION_FILE=VERSION
 #   else use last found remote
 REMOTES=$(git remote show)
 for R in $REMOTES; do
-    MASTER=$(git remote show $R  2>/dev/null \
+    MASTER=$(git remote show "$R"  2>/dev/null \
         | sed -n '/HEAD branch/s/.*: //p')
     MASTER_BRANCH="refs/remotes/${R}/${MASTER}"
     #echo "Master-branch: ${MASTER_BRANCH}"
     [ "x$R" == "xorigin" ] && break
 done
 
-PREREL=$(git rev-list --count HEAD ^$MASTER_BRANCH)
+PREREL=$(git rev-list --count HEAD ^"$MASTER_BRANCH")
 
 # if we use a version file, things are easy:
 [ -e $VERSION_FILE ] && {
+    # version for Makefile to set it in various places
     VERSION=$(cat $VERSION_FILE)
     PR_VERSION="${VERSION}-pr${PREREL}"
     echo "$PR_VERSION" > $VERSION_FILE
+    echo "$PR_VERSION"
 }
 
 # if we store the version in debian changelog:
@@ -36,8 +38,8 @@ PREREL=$(git rev-list --count HEAD ^$MASTER_BRANCH)
         | head -n 1 \
         | cut -d\( -f 2 \
         | cut -d\) -f 1)
-    VERSION=$(echo $DEBIAN_VERSION | cut -d- -f 1)
-    RELEASE=$(echo $DEBIAN_VERSION | cut -d- -f 2)
+    VERSION=$(echo "$DEBIAN_VERSION" | cut -d- -f 1)
+    RELEASE=$(echo "$DEBIAN_VERSION" | cut -d- -f 2)
     PR_VERSION="${VERSION}-pr${PREREL}"
     sed s%${VERSION}%${PR_VERSION}% -i debian/changelog
     #echo "$VERSION => $DEBIAN_VERSION + $DEBIAN_RELEASE => $PR_VERSION"
@@ -46,12 +48,13 @@ PREREL=$(git rev-list --count HEAD ^$MASTER_BRANCH)
 # lets see if RPM also needs a version to be set
 SPEC_FILES=$(ls rpm/*spec)
 [ -z "${SPEC_FILES}" ] || {
-    [ -z ${VERSION} ] || {
+    [ -z "${VERSION}" ] || {
+        PR_VERSION="${VERSION}~pr${PREREL}"
         for SPEC_FILE in $SPEC_FILES; do
-            grep -q $VERSION $SPEC_FILE && { # version found, needs update
-                sed s%${VERSION}%${PR_VERSION}% -i $SPEC_FILE
+            grep -q "$VERSION" "$SPEC_FILE" && { # version found, needs update
+                sed "s/${VERSION}/${PR_VERSION}/" -i "$SPEC_FILE"
             }
         done
+        echo "$PR_VERSION"
     }
 }
-echo ${PR_VERSION}
