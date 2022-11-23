@@ -75,11 +75,12 @@ get-sources:
 	rm -f .patched
 
 info:
-	@echo "DESTDIR:         >>$(DESTDIR)<<"
-	@echo "INSTALLDIRS:     >>$(INSTALLDIRS)<<"
-	@echo "VERSION:         >>$(VERSION)<<"
-	@echo "RPM_VERSION:     >>$(RPM_VERSION)<<"
-	@echo "DEBIAN_VERSION:  >>$(DEBIAN_VERSION)<<"
+	@echo "DESTDIR:         $(DESTDIR)"
+	@echo "INSTALLDIRS:     $(INSTALLDIRS)"
+	@echo "VERSION:         $(VERSION)"
+	@echo "RPM_VERSION:     $(RPM_VERSION)"
+	@echo "DEBIAN_VERSION:  $(DEBIAN_VERSION)"
+	@echo "BASE_VERSION:    ${BASE_VERSION}"
 
 ### Dockers
 dockerised_most_packages: dockerised_deb_debian_buster\
