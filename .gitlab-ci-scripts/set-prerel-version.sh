@@ -47,7 +47,7 @@ PREREL=$(git rev-list --count HEAD ^"$MASTER_BRANCH")
         | cut -d\) -f 1)
     VERSION=$(echo "$DEBIAN_VERSION" | cut -d- -f 1)
     RELEASE=$(echo "$DEBIAN_VERSION" | cut -d- -f 2)
-    PR_VERSION="${VERSION}~{DEVSTRING}${PREREL}"
+    PR_VERSION="${VERSION}~${DEVSTRING}${PREREL}"
     sed s%${VERSION}%${PR_VERSION}% -i debian/changelog
     #echo "$VERSION => $DEBIAN_VERSION + $DEBIAN_RELEASE => $PR_VERSION"
 }
