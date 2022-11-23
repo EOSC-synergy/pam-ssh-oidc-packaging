@@ -331,10 +331,10 @@ unpatch-for-rpm:
 srctar: patch-for-rpm
 	mkdir -p rpm/rpmbuild/SOURCES
 
-	@(cd ..; tar czf $(SRC_TAR) --exclude-vcs --exclude=.pc --exclude $(PGK_NAME)/config $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(BASE_VERSION)_')
+	@(cd ..; tar czf $(SRC_TAR) --exclude-vcs --exclude=.pc --exclude $(PGK_NAME)/config $(PKG_NAME) --transform='s%${PKG_NAME}%${PKG_NAME}-$(BASE_VERSION)%')
 	mv ../$(SRC_TAR) rpm/rpmbuild/SOURCES
 
-	@(cd ..; tar czf $(SRC_TAR_AC) $(PKG_NAME)/documentation/README-autoconfig.md $(PKG_NAME)/config/pam.d-sshd-suse --transform='s_${PKG_NAME}_${PKG_NAME_AC}-$(BASE_VERSION)_')
+	@(cd ..; tar czf $(SRC_TAR_AC) $(PKG_NAME)/documentation/README-autoconfig.md $(PKG_NAME)/config/pam.d-sshd-suse --transform='s%${PKG_NAME}%${PKG_NAME_AC}-$(BASE_VERSION)%')
 	mv ../$(SRC_TAR_AC) rpm/rpmbuild/SOURCES
 
 .PHONY: rpms
