@@ -2,10 +2,11 @@ PKG_NAME  = pam-ssh-oidc
 PKG_NAME_UPSTREAM = pam-ssh-oidc
 
 SPECFILE := rpm/${PKG_NAME}.spec
-RPM_VERSION := $(shell grep ^Version ${SPECFILE} | cut -d : -f 2 | sed s/\ //g)
+#RPM_VERSION := $(shell grep ^Version ${SPECFILE} | cut -d : -f 2 | sed s/\ //g)
 
 BASE_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | cut -d \- -f 1)
 DEBIAN_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | sed s/-[0-9][0-9]*//)
+RPM_VERSION := $(DEBIAN_VERSION)
 VERSION := $(DEBIAN_VERSION)
 
 
