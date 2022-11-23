@@ -4,6 +4,7 @@ pam-ssh-oidc (0.2.0-2) UNRELEASED; urgency=medium
   * Specify clear commit number to remove the bug introduced earlier
   * Include opensuse in autoconfig
 
+ -- Marcus Hardt <marcus@hardt-it.de>  Thu, 23 Nov 2022 10:28:28 +0200
 
 pam-ssh-oidc (0.1.4-1) UNRELEASED; urgency=medium
 
