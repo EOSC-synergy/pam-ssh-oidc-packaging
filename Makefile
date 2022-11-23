@@ -314,7 +314,7 @@ patch-for-rpm:
 		done; \
     fi
 	@touch .patched
-	find rpm
+	#find rpm
 .PHONY: unpatch-for-rpm
 unpatch-for-rpm:
 	@if [ -e ".patched" ]; then \
@@ -343,11 +343,11 @@ rpms: srpm rpm
 
 .PHONY: rpm
 rpm: srctar
-	find rpm
+	#find rpm
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}.spec
-	find rpm
+	#find rpm
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}-autoconfig.spec
-	find rpm
+	#find rpm
 
 .PHONY: srpm
 srpm: srctar
