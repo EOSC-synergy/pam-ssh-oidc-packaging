@@ -23,7 +23,7 @@ variables:
   # See generic-ci.yml -> .build-definition for the full list
   # DOCKER_IMAGE_VERSION
   # DOCKER_IMAGE_VERSION_WINDOWS
-  #PREREL_BRANCH_NAME: 'ci/devel'
+  PREREL_BRANCH_NAME: 'ci/devel'
 
 .deb-before-script: &deb-before-script
   - |
