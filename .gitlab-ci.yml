@@ -1,6 +1,7 @@
 ---
 include:
   - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/generic-ci.yml'
+  - 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs-publish-to-repo.yml'
   # we don't need the pipeline jobs, since we have to override all of them # here
   #- 'https://git.scc.kit.edu/m-team/ci-voodoo/raw/master/ci-include/pipeline-jobs.yml'
 
@@ -9,7 +10,6 @@ variables:
   # These variables are set globally here:
   DOCKER_IMAGE_NAMESPACE: 'marcvs/build'
   DOCKER_IMAGE_NAME: 'pam-ssh-oidc-packaging'
-  PACKAGE_NAMES: 'pam-ssh-oidc pam-ssh-oidc-autoconfig'
   #TARGET_REPO: 'devel'
   # The following varialbes can be overwritten only in specific targets
   # See generic-ci.yml -> .repo-definition for the full list
@@ -23,11 +23,12 @@ variables:
   # See generic-ci.yml -> .build-definition for the full list
   # DOCKER_IMAGE_VERSION
   # DOCKER_IMAGE_VERSION_WINDOWS
+  PREREL_BRANCH_NAME: 'ci/devel'
 
 .deb-before-script: &deb-before-script
   - |
     make get-sources
-    echo "### before-script ##############################################"
+    echo "### pam-ssh-before-script ##############################################"
     echo "CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}"
     echo "CI_COMMIT_BRANCH:   ${CI_COMMIT_BRANCH}"
     echo "CI_DEFAULT_BRANCH:  ${CI_DEFAULT_BRANCH}"
@@ -162,15 +163,3 @@ build-opensuse-tumbleweed:
 integration-tests:
   extends:
     - .trigger-integration-tests-ssh-oidc
-
-publish-to-devel:
-  extends:
-    - .publish-to-devel
-
-publish-to-prerel:
-  extends:
-    - .publish-to-prerel
-
-publish-to-preprod:
-  extends:
-    - .publish-to-preprod

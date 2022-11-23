@@ -2,9 +2,11 @@ PKG_NAME  = pam-ssh-oidc
 PKG_NAME_UPSTREAM = pam-ssh-oidc
 
 SPECFILE := rpm/${PKG_NAME}.spec
-RPM_VERSION := $(shell grep ^Version ${SPECFILE} | cut -d : -f 2 | sed s/\ //g)
+#RPM_VERSION := $(shell grep ^Version ${SPECFILE} | cut -d : -f 2 | sed s/\ //g)
 
+BASE_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | cut -d \- -f 1)
 DEBIAN_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | sed s/-[0-9][0-9]*//)
+RPM_VERSION := $(DEBIAN_VERSION)
 VERSION := $(DEBIAN_VERSION)
 BASE_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | cut -d \- -f 1)
 
@@ -75,11 +77,12 @@ get-sources:
 	rm -f .patched
 
 info:
-	@echo "DESTDIR:         >>$(DESTDIR)<<"
-	@echo "INSTALLDIRS:     >>$(INSTALLDIRS)<<"
-	@echo "VERSION:         >>$(VERSION)<<"
-	@echo "RPM_VERSION:     >>$(RPM_VERSION)<<"
-	@echo "DEBIAN_VERSION:  >>$(DEBIAN_VERSION)<<"
+	@echo "DESTDIR:         $(DESTDIR)"
+	@echo "INSTALLDIRS:     $(INSTALLDIRS)"
+	@echo "VERSION:         $(VERSION)"
+	@echo "RPM_VERSION:     $(RPM_VERSION)"
+	@echo "DEBIAN_VERSION:  $(DEBIAN_VERSION)"
+	@echo "BASE_VERSION:    ${BASE_VERSION}"
 
 ### Dockers
 dockerised_most_packages: dockerised_deb_debian_buster\
@@ -292,7 +295,7 @@ patch-for-rpm:
 		done; \
     fi
 	@touch .patched
-	find rpm
+	#find rpm
 .PHONY: unpatch-for-rpm
 unpatch-for-rpm:
 	@if [ -e ".patched" ]; then \
@@ -310,10 +313,10 @@ unpatch-for-rpm:
 srctar: patch-for-rpm
 	mkdir -p rpm/rpmbuild/SOURCES
 
-	@(cd ..; tar czf $(SRC_TAR) --exclude-vcs --exclude=.pc --exclude $(PGK_NAME)/config $(PKG_NAME) --transform='s_${PKG_NAME}_${PKG_NAME}-$(BASE_VERSION)_')
+	@(cd ..; tar czf $(SRC_TAR) --exclude-vcs --exclude=.pc --exclude $(PGK_NAME)/config $(PKG_NAME) --transform='s%${PKG_NAME}%${PKG_NAME}-$(BASE_VERSION)%')
 	mv ../$(SRC_TAR) rpm/rpmbuild/SOURCES
 
-	@(cd ..; tar czf $(SRC_TAR_AC) $(PKG_NAME)/documentation/README-autoconfig.md $(PKG_NAME)/config/pam.d-sshd-suse --transform='s_${PKG_NAME}_${PKG_NAME_AC}-$(BASE_VERSION)_')
+	@(cd ..; tar czf $(SRC_TAR_AC) $(PKG_NAME)/documentation/README-autoconfig.md $(PKG_NAME)/config/pam.d-sshd-suse --transform='s%${PKG_NAME}%${PKG_NAME_AC}-$(BASE_VERSION)%')
 	mv ../$(SRC_TAR_AC) rpm/rpmbuild/SOURCES
 
 .PHONY: rpms
@@ -321,14 +324,15 @@ rpms: srpm rpm
 
 .PHONY: rpm
 rpm: srctar
-	find rpm
+	#find rpm
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}.spec
-	find rpm
+	#find rpm
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bb  rpm/${PKG_NAME}-autoconfig.spec
-	find rpm
+	#find rpm
 
 .PHONY: srpm
 srpm: srctar
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bs  rpm/${PKG_NAME}.spec
 	rpmbuild --define "_topdir ${PWD}/rpm/rpmbuild" -bs  rpm/${PKG_NAME}-autoconfig.spec
+
 
