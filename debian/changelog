@@ -1,8 +1,9 @@
-pam-ssh-oidc (0.2.0-2) UNRELEASED; urgency=medium
+pam-ssh-oidc (0.2.0-3) UNRELEASED; urgency=medium
 
   [ Marcus Hardt ]
   * Specify clear commit number to remove the bug introduced earlier
   * Include opensuse in autoconfig
+  * Adapt to new versioning scheme
 
  -- Marcus Hardt <marcus@hardt-it.de>  Thu, 23 Nov 2022 10:28:28 +0200
 
