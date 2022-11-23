@@ -49,7 +49,7 @@ PREREL=$(git rev-list --count HEAD ^"$MASTER_BRANCH")
 SPEC_FILES=$(ls rpm/*spec)
 [ -z "${SPEC_FILES}" ] || {
     [ -z "${VERSION}" ] || {
-        PR_VERSION="${VERSION}~pr${PREREL}"
+        PR_VERSION="${VERSION}^pr${PREREL}"
         for SPEC_FILE in $SPEC_FILES; do
             grep -q "$VERSION" "$SPEC_FILE" && { # version found, needs update
                 sed "s/${VERSION}/${PR_VERSION}/" -i "$SPEC_FILE"
