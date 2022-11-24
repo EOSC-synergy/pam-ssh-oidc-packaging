@@ -8,7 +8,6 @@ BASE_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \)
 DEBIAN_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | sed s/-[0-9][0-9]*//)
 RPM_VERSION := $(DEBIAN_VERSION)
 VERSION := $(DEBIAN_VERSION)
-BASE_VERSION := $(shell head debian/changelog  -n 1 | cut -d \( -f 2 | cut -d \) -f 1 | cut -d \- -f 1)
 
 
 # Parallel builds:
@@ -263,6 +262,26 @@ dockerised_rpm_opensuse_tumbleweed: docker_opensuse_tumbleweed
 	@echo "Writing build log to $@.log"
 	@docker run --tty --rm -v ${DOCKER_BASE}:/home/build opensuse_tumbleweed \
 		/home/build/${PACKAGE}/build.sh ${PACKAGE} opensuse_tumbleweed ${PKG_NAME} > $@.log
+
+.PHONY: publish-to-repo
+publish-to-repo:
+	@rpmsign --addsign \
+		../results/*/*rpm\
+		|| {\
+		@echo "Error signing packages:";\
+		@echo "You may need a file $HOME/.rpmmacros containing:";\
+		@echo "%_gpg_name ACDFB08FDC962044D87FF00B512839863D487A87";\
+		};
+	@scp ../results/centos7/* build@repo.data.kit.edu:/var/www/centos/centos7
+	@scp ../results/centos8/* build@repo.data.kit.edu:/var/www/centos/centos8
+	@scp ../results/debian_buster/* build@repo.data.kit.edu:/var/www/debian/buster
+	@scp ../results/debian_bullseye/* build@repo.data.kit.edu:/var/www/debian/bullseye
+	@scp ../results/ubuntu_bionic/* build@repo.data.kit.edu:/var/www/ubuntu/bionic 
+	@scp ../results/ubuntu_focal/* build@repo.data.kit.edu:/var/www/ubuntu/focal
+	@scp ../results/opensuse15.2/* build@repo.data.kit.edu:/var/www/suse/opensuse-leap-15.2
+	@scp ../results/opensuse15.3/* build@repo.data.kit.edu:/var/www/suse/opensuse-leap-15.3
+	@scp ../results/opensuse_tumbleweed/* build@repo.data.kit.edu:/var/www/suse/opensuse-tumbleweed
+	#@scp ../results/sle15/* build@repo.data.kit.edu:/var/www/suse/sle15
 
 # Debian Packaging
 
