@@ -71,7 +71,7 @@ test -e $SSHD && {
         grep -q "^${OPTION}" ${SSHD} && {
             CONFIG_SHOULD_WORK="true"
         }
-        [ "x${CONFIG_SHOULD_WORK}" == "xfalse" ] && {
+        [ "x${CONFIG_SHOULD_WORK}" = "xfalse" ] && {
             echo "### WARNING ##########################################################"
             echo "#  pam-ssh-oidc detected that your ${SSHD}              #"
             echo "#  does not contain any of                                           #"
