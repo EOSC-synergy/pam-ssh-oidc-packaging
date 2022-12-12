@@ -5,15 +5,24 @@
 dh_test_sshd_config(){
     SSHD=/etc/ssh/sshd_config
     # Check if ChalleneResponseAuthentication is already enabled:
-    grep -q "^ChallengeResponseAuthentication yes" ${SSHD} || {
-        echo "######################################################################"
-        echo "#  pam-ssh-oidc detected that your /etc/ssh/sshd_config              #"
-        echo "#  does not contain 'ChallengeResponseAuthentication yes'            #"
-        echo "#  Consider setting this to yes, if login via pam-ssh does           #"
-        echo "#  not show the 'AccessToken: ' prompt. Note that this will          #"
-        echo "#  enable password login, even if 'Passwordauthentication no' is set #"
-        echo "######################################################################"
-    }
+    CONFIG_SHOULD_WORK="false"
+    for OPTION in "ChallengeResponseAuthentication yes" "KbdInteractiveAuthentication yes"; do 
+        grep -q "^${OPTION}" ${SSHD} && {
+            CONFIG_SHOULD_WORK="true"
+        }
+        [ "x${CONFIG_SHOULD_WORK}" = "xfalse" ] && {
+            echo "### WARNING ##########################################################"
+            echo "#  pam-ssh-oidc detected that your ${SSHD}              #"
+            echo "#  does not contain any of                                           #"
+            echo "#  > ChallengeResponseAuthentication yes                             #"
+            echo "#  > KbdInteractiveAuthentication yes                                #"
+            echo "#  Consider setting one of these to yes, if login via pam-ssh does   #"
+            echo "#  not show the 'AccessToken: ' prompt. Note that this will          #"
+            echo "#  enable password login, even if 'Passwordauthentication no' is set #"
+            echo "#  You can disable passwords in /etc/pam.d/ssh                       #"
+            echo "######################################################################"
+        }
+    done
 }
 
 case "$1" in

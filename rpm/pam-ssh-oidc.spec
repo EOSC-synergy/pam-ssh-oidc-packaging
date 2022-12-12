@@ -65,16 +65,25 @@ mv -f ${RPM_BUILD_ROOT}%{_libdir}/security/* ${RPM_BUILD_ROOT}%{PAM_LIB_DIR}
 # Test /etc/ssh/sshd for adequate config
 SSHD=%{_sysconfdir}/ssh/sshd_config
 # Check if ChalleneResponseAuthentication is already enabled:
+CONFIG_SHOULD_WORK="false"
 test -e $SSHD && {
-    grep -q "^ChallengeResponseAuthentication yes" ${SSHD} || {
-        echo "### WARNING ##########################################################"
-        echo "#  pam-ssh-oidc detected that your ${SSHD}              #"
-        echo "#  does not contain 'ChallengeResponseAuthentication yes'            #"
-        echo "#  Consider setting this to yes, if login via pam-ssh does           #"
-        echo "#  not show the 'AccessToken: ' prompt. Note that this will          #"
-        echo "#  enable password login, even if 'Passwordauthentication no' is set #"
-        echo "######################################################################"
-    }
+    for OPTION in "ChallengeResponseAuthentication yes" "KbdInteractiveAuthentication yes"; do 
+        grep -q "^${OPTION}" ${SSHD} && {
+            CONFIG_SHOULD_WORK="true"
+        }
+        [ "x${CONFIG_SHOULD_WORK}" = "xfalse" ] && {
+            echo "### WARNING ##########################################################"
+            echo "#  pam-ssh-oidc detected that your ${SSHD}              #"
+            echo "#  does not contain any of                                           #"
+            echo "#  > ChallengeResponseAuthentication yes                             #"
+            echo "#  > KbdInteractiveAuthentication yes                                #"
+            echo "#  Consider setting one of these to yes, if login via pam-ssh does   #"
+            echo "#  not show the 'AccessToken: ' prompt. Note that this will          #"
+            echo "#  enable password login, even if 'Passwordauthentication no' is set #"
+            echo "#  You can disable passwords in /etc/pam.d/ssh                       #"
+            echo "######################################################################"
+        }
+    done
 }
 test -e $SSHD || {
     echo "### WARNING ##########################################################"
