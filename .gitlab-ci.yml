@@ -121,13 +121,28 @@ build-centos-stream:
     - *rpm-before-script
 
 
-build-rockylinux-8:
-  extends:
-    - .build-rockylinux-8
-
 build-rockylinux-8.5:
   extends:
     - .build-rockylinux-85
+  before_script:
+    - *rpm-before-script
+
+build-rockylinux-9:
+  extends:
+    - .build-rockylinux-9
+  before_script:
+    - *rpm-before-script
+
+
+build-almalinux-8.7:
+  extends:
+    - .build-almalinux-87
+  before_script:
+    - *rpm-before-script
+
+build-almalinux-9:
+  extends:
+    - .build-almalinux-9
   before_script:
     - *rpm-before-script
 
@@ -163,3 +178,6 @@ build-opensuse-tumbleweed:
 integration-tests:
   extends:
     - .trigger-integration-tests-ssh-oidc
+
+
+
