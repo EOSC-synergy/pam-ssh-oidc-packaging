@@ -22,7 +22,7 @@ Description: Enable ssh to use OIDC AccessTokens via pam module
 Package: pam-ssh-oidc-autoconfig
 Architecture: all
 Pre-Depends: dpkg (>= 1.16.1), ${misc:Pre-Depends}
-Depends: pam-ssh-oidc (>= 0.1.2-6)
+Depends: pam-ssh-oidc (>= 0.2.0-7)
 Suggests: motley-cue
 Description: PAM (Pluggable Authentication Modules) Plugin allowing 
  consumption of OIDC AccessTokens. This package automatically configures 
