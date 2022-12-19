@@ -1,3 +1,5 @@
+#!/bin/bash
+set -e
 ###############################################
 #DEBHELPER#
 ###############################################
@@ -10,7 +12,7 @@ dh_test_sshd_config(){
         grep -q "^${OPTION}" ${SSHD} && {
             CONFIG_SHOULD_WORK="true"
         }
-        [ "x${CONFIG_SHOULD_WORK}" = "xfalse" ] && {
+        if [ "x${CONFIG_SHOULD_WORK}" = "xfalse" ]; then
             echo "### WARNING ##########################################################"
             echo "#  pam-ssh-oidc detected that your ${SSHD}              #"
             echo "#  does not contain any of                                           #"
@@ -21,7 +23,7 @@ dh_test_sshd_config(){
             echo "#  enable password login, even if 'Passwordauthentication no' is set #"
             echo "#  You can disable passwords in /etc/pam.d/ssh                       #"
             echo "######################################################################"
-        }
+        fi
     done
 }
 
