@@ -18,10 +18,14 @@ on those distributions for which we provide packages.
 
 Manual installation works as follows:
 
-- Enable `ChallengeResponseAuthentication` in your sshd config (typically
-    `/etc/ssh/sshd_config`).  **Note**: This will enable Password
-    authentication, which may not be intended. See below how to disable
-    passwords via PAM.
+- Ensure that either `ChallengeResponseAuthentication yes` or
+    `KbdInteractiveAuthentication yes` exist your sshd config (typically
+    `/etc/ssh/sshd_config`).
+
+    **Note**: This will enable Password Authentication, which may not be
+    intended. You can disable Password Authentication in `/etc/pam.d/sshd`
+    by commenting other lines starting with `auth`. (Also check `@include`
+    statements).
 
 - Add this line at the top of your `/etc/pam.d/sshd` config:
     ```
