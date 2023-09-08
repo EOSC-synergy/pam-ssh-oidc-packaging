@@ -8,6 +8,7 @@ Summary: PAM Plugin allowing consumption of OIDC AccessTokens
 Group: System/Libraries
 License: MIT
 URL: https://github.com/EOSC-synergy/ssh-oidc
+%define  _disable_source_fetch 0
 Source0: pam-ssh-oidc.tar.gz
 
 BuildRequires: gcc
