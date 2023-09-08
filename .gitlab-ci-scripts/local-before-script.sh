@@ -17,8 +17,13 @@ case ${DISTRO} in
     ;;
     *) # We expect only RPM by default
         make get-sources
-        make patch-for-rpm
-        ls -la rpm
+        make srctar
+        # place source tarballs
+        mkdir -p /root/rpmbuild/SOURCES
+        mkdir -p /root/rpmbuild/RPMS
+        mkdir -p /usr/src/packages/SOURCES
+        mv rpm/rpmbuild/SOURCES/* /root/rpmbuild/SOURCES/
+
         echo "### pam-ssh-before-script (local) ##############################################"
         echo "CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}"
         echo "CI_COMMIT_BRANCH:   ${CI_COMMIT_BRANCH}"
