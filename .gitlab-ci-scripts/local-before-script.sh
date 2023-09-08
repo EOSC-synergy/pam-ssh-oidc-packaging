@@ -25,6 +25,7 @@ case ${DISTRO} in
         mkdir -p /usr/src/packages/SOURCES
         mv rpm/rpmbuild/SOURCES/* /usr/src/packages/SOURCES/
         rm -rf rpm/rpmbuild
+        info
     ;;
     *) # We expect only RPM by default
         make get-sources
@@ -35,7 +36,7 @@ case ${DISTRO} in
         mv rpm/rpmbuild/SOURCES/* /root/rpmbuild/SOURCES/
         rm -rf rpm/rpmbuild
 
-        info()
+        info
     ;;
 esac
 
