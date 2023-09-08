@@ -23,6 +23,7 @@ case ${DISTRO} in
         mkdir -p /root/rpmbuild/RPMS
         mkdir -p /usr/src/packages/SOURCES
         mv rpm/rpmbuild/SOURCES/* /root/rpmbuild/SOURCES/
+        rm -rf rpm/rpmbuild
 
         echo "### pam-ssh-before-script (local) ##############################################"
         echo "CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}"
