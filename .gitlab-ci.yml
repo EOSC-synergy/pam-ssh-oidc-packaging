@@ -33,8 +33,8 @@ integration-tests:
   extends:
     - .trigger-integration-tests-ssh-oidc
   variables:
-    DISTRO: 'aaaaaaa'
-    RELEASE: $RELEASE
+    DISTRO: 'debian'
+    RELEASE: 'buster'
  
  
  
