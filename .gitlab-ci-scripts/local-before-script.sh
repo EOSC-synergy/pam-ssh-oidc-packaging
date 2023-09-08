@@ -25,6 +25,7 @@ case ${DISTRO} in
         mkdir -p /usr/src/packages/SOURCES
         mv rpm/rpmbuild/SOURCES/* /usr/src/packages/SOURCES/
         rm -rf rpm/rpmbuild
+        rm -rf /root/rpmbuild
         info
     ;;
     *) # We expect only RPM by default
