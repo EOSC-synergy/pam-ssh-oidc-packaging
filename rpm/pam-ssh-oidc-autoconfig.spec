@@ -8,7 +8,6 @@ Summary: PAM Plugin allowing consumption of OIDC AccessTokens - Autoconfig
 Group: System/Libraries
 License: MIT
 URL: https://github.com/EOSC-synergy/ssh-oidc
-%define  _disable_source_fetch 0
 Source0: pam-ssh-oidc-autoconfig.tar.gz
 Requires: pam-ssh-oidc >= 0.1.2-6
 
