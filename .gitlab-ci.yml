@@ -12,8 +12,8 @@ variables:
   DOCKER_IMAGE_NAMESPACE: "marcvs/build"
   DOCKER_IMAGE_NAME: "pam-ssh-oidc-packaging"
   SPEC_FILES:
-    - rpm/pam-ssh-oidc.spec
-    - rpm/pam-ssh-oidc-autoconfig.spec
+    rpm/pam-ssh-oidc.spec
+    rpm/pam-ssh-oidc-autoconfig.spec
   #TARGET_REPO: 'devel'
   # The following varialbes can be overwritten only in specific targets
   # See generic-ci.yml -> .repo-definition for the full list
