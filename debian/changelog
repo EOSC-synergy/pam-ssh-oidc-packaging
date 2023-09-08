@@ -1,3 +1,10 @@
+pam-ssh-oidc (0.2.0-9) UNRELEASED; urgency=medium
+
+  [ Marcus Hardt ]
+  * ci-improvements
+
+ -- Marcus Hardt <marcus@hardt-it.de>  Fri, 08 Sep 2023 11:54:03 +0200
+
 pam-ssh-oidc (0.2.0-8) UNRELEASED; urgency=medium
 
   [ Marcus Hardt ]
