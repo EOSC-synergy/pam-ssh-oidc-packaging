@@ -34,3 +34,4 @@ variables:
 integration-tests:
   extends:
     - .trigger-integration-tests-ssh-oidc
+ 
